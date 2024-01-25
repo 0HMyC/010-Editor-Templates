@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: AtlusFieldNPCPack_P3P.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse Field NPC *_pck.dat files.
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef ubyte u8;
+typedef ushort u16;
+typedef uint u32;
+
+typedef struct packHeader
+{
+    u32 Magic <bgcolor=0x00FF00>;
+    u32 TotalSegments <bgcolor=0xFF0000>;
+};
+
+typedef struct chunkSep
+{
+    u32 Field00 <format=hex, comment = "Always 0xFFFF0000?">;
+    u32 Field04 <format=hex, comment = "Always 0x0000E803?">;
+    u32 Field08 <format=hex, comment = "Always 0xFFFFFFFF?">;
+    u32 Field0C <format=hex, comment = "Always 0x00000000?">;
+};
+
+typedef struct chunkNPC
+{
+    u32 PositionID;
+    u8 TextureCharID;
+    u8 TextureVarID;
+    u16 Field06;
+    u32 ProcedureIndex;
+    u32 HideOnFlag <comment = "Hides NPC if bitflag is enabled">;
+};
+
+typedef struct chunkArr
+{
+    while (FTell() < (Hed.TotalSegments * 16) + 8)
+    {
+        if (ReadUInt() == 65535 && ReadUInt(FTell() + 4) == 65536000 && ReadUInt(FTell() + 8) == -1 && ReadUInt(FTell() + 12) == 0)
+        {
+            chunkSep ChunkSeperator <name = "Chunk Seperator", bgcolor=0x0000FF>;
+        }
+        else
+        {
+            chunkNPC ChunkNPC <name = "NPC Chunk">;
+        }
+        //Printf("Reading Bytes 1 of 4: %d\n", ReadUInt());
+        //Printf("Reading Bytes 2 of 4: %d\n", ReadUInt(FTell() + 4));
+        //Printf("Reading Bytes 3 of 4: %d\n", ReadUInt(FTell() + 8));
+        //Printf("Reading Bytes 4 of 4: %d\n", ReadUInt(FTell() + 12));
+        // FSeek(FTell() + 16);
+    }
+};
+
+typedef struct fieldDAT
+{
+    packHeader Hed <name = "Header">;
+    chunkArr AllChunks <name = "All Chunks">;
+    u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+};
+
+fieldDAT FILE;

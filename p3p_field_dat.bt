@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: AtlusFieldDat_P3P.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse Field *.dat files.
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef ushort u16;
+typedef uint u32;
+
+typedef struct objectPos
+{
+    u32 ObjectID <fgcolor=0x00FF00>;
+    u16 ObjectX <fgcolor=0xFFFF00>;
+    u16 ObjectY <fgcolor=0xEEEE00>;
+    u16 Field08 <comment = "Padding?", bgcolor=0x00FFFF>;
+    u16 Field0A <comment = "Denotes end of segment?", bgcolor=0xFF00FF>;
+};
+
+typedef struct fieldDAT
+{
+    u32 TotalObjs <name = "Total Objects", bgcolor=0xFF0000>;
+    objectPos Objects[TotalObjs] <name = "Objects">;
+    u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+};
+
+fieldDAT FILE;

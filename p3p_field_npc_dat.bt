@@ -1,0 +1,44 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: AtlusFieldNPCDat_P3P.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse Field NPC *.dat files.
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef ushort u16;
+typedef uint u32;
+
+typedef struct objectNPC
+{
+    u32 NPCID <name = "ID", fgcolor=0x00FF00>;
+    u16 NPCX <name = "X Position", fgcolor=0xFFFF00>;
+    u16 NPCY <name = "Y Position", fgcolor=0xEEEE00>;
+    u16 Field08 <format=hex, comment = "Padding?", bgcolor=0x00FFFF>;
+    u16 Field0A <format=hex, comment = "Denotes end of segment?", bgcolor=0xFF00FF>;
+};
+
+typedef struct npcArray(u32 arrSize)
+{
+    while (arrSize > 0)
+    {
+        objectNPC NPC <name = "NPC">;
+        arrSize -= 1;
+        //break;
+    }
+    //objectNPC NPC[arrSize] <name = "NPCs">;
+};
+
+typedef struct fieldDAT
+{
+    u32 TotalNPC <name = "Total NPCs", bgcolor=0xFF0000>;
+    npcArray AllNPC(TotalNPC) <name = "All NPCs", comment = "List is completely unsorted, entries can go in any order">;
+    u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+};
+
+fieldDAT FILE;

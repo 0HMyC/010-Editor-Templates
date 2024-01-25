@@ -1,0 +1,49 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: AtlusFieldPack_P3P.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse Field *_pck.dat files.
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef ubyte u8;
+typedef ushort u16;
+typedef uint u32;
+
+enum<ubyte> icons
+{
+    AreaTransition = 8,
+    SavePoint = 56,
+    Unknown48 = 72,
+};
+
+typedef struct fldObject
+{
+    u16 objID <fgcolor=0xFFFF00>;
+    u8 field02 <bgcolor=0x00FFFF>;
+    icons objIcon <fgcolor=0x00FF99>;
+    u16 field04 <bgcolor=0x00FFFF>;
+    u16 field06 <bgcolor=0x00AAAA, comment="Appears to always be 0xE803?">;
+    u32 procedureIndex <fgcolor=0x00AA00>;
+    u32 field0C <bgcolor=0x00FFFF>;
+};
+
+typedef struct totalObj
+{
+    u32 LargeTotal;
+    u32 SmallTotal <comment = "LargeTotal / 0x10">;
+};
+
+typedef struct fieldDAT
+{
+    totalObj TotalObjects <name = "Total Objects", bgcolor=0x00FF00>;
+    fldObject FieldObjects[TotalObjects.SmallTotal] <name = "Field Objects">;
+    u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF>;
+};
+
+fieldDAT FILE;
