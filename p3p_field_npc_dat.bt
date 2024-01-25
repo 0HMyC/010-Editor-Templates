@@ -29,9 +29,7 @@ typedef struct npcArray(u32 arrSize)
     {
         objectNPC NPC <name = "NPC">;
         arrSize -= 1;
-        //break;
     }
-    //objectNPC NPC[arrSize] <name = "NPCs">;
 };
 
 typedef struct fieldDAT

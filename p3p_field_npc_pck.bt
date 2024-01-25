@@ -17,8 +17,8 @@ typedef uint u32;
 
 typedef struct packHeader
 {
-    u32 Magic <bgcolor=0x00FF00>;
-    u32 TotalSegments <bgcolor=0xFF0000>;
+    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
+    u32 TotalSegments <comment = "Increments by 0x10", bgcolor=0xFF0000>;
 };
 
 typedef struct chunkSep
@@ -31,39 +31,56 @@ typedef struct chunkSep
 
 typedef struct chunkNPC
 {
-    u32 PositionID;
-    u8 TextureCharID;
-    u8 TextureVarID;
-    u16 Field06;
-    u32 ProcedureIndex;
-    u32 HideOnFlag <comment = "Hides NPC if bitflag is enabled">;
+    u32 PositionID <bgcolor=0x00FF00>;
+    u8 TextureCharID <comment = "nX_0_0_0.tmx", bgcolor=0x7799FF>;
+    u8 TextureVarID <comment = "n0_X_0_0.tmx", bgcolor=0x5577DD>;
+    u16 Field06 <format=hex, comment = "Always 0xE803?", bgcolor=0x00FFFF>;
+    u32 ProcedureIndex <comment = "Calls script procedure from corresponding BF file", bgcolor=0x00FF00>;
+    u32 HideOnFlag <comment = "Hides NPC if bitflag is enabled", bgcolor=0x22FFFF>;
 };
 
-typedef struct chunkArr
+// Check if the next segment of 0x10 bytes is an NPC Chunk Seperator
+ubyte isNextStart(int64 fPos)
 {
-    while (FTell() < (Hed.TotalSegments * 16) + 8)
+    if (ReadUInt() == 65535 && ReadUInt(fPos + 4) == 65536000 && ReadUInt(fPos + 8) == -1 && ReadUInt(fPos + 12) == 0)
     {
-        if (ReadUInt() == 65535 && ReadUInt(FTell() + 4) == 65536000 && ReadUInt(FTell() + 8) == -1 && ReadUInt(FTell() + 12) == 0)
+        return 1;
+    }
+    return 0;
+}
+
+typedef struct npcGroup(u8 atEOF)
+{
+    chunkSep Seperator <name = "Seperator", bgcolor=0x0000FF, comment = "Seperates NPC Groups">;
+    if (atEOF == 0)
+    {
+        while (isNextStart(FTell()) == 0)
         {
-            chunkSep ChunkSeperator <name = "Chunk Seperator", bgcolor=0x0000FF>;
+            chunkNPC NPC <name = "NPC">;
         }
-        else
-        {
-            chunkNPC ChunkNPC <name = "NPC Chunk">;
-        }
-        //Printf("Reading Bytes 1 of 4: %d\n", ReadUInt());
-        //Printf("Reading Bytes 2 of 4: %d\n", ReadUInt(FTell() + 4));
-        //Printf("Reading Bytes 3 of 4: %d\n", ReadUInt(FTell() + 8));
-        //Printf("Reading Bytes 4 of 4: %d\n", ReadUInt(FTell() + 12));
-        // FSeek(FTell() + 16);
     }
 };
 
-typedef struct fieldDAT
+typedef struct chunkArr(u32 tot)
+{
+    while (FTell() < (tot * 16) + 8)
+    {
+        if (FTell() + 16 == (tot * 16) + 8)
+        {
+            npcGroup GroupNPC(1) <name = "Group">;
+        }
+        else
+        {
+            npcGroup GroupNPC(0) <name = "Group">;
+        }
+    }
+};
+
+typedef struct npcPackDAT
 {
     packHeader Hed <name = "Header">;
-    chunkArr AllChunks <name = "All Chunks">;
+    chunkArr AllChunks(Hed.TotalSegments) <name = "NPC Groups">;
     u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
 };
 
-fieldDAT FILE;
+npcPackDAT FILE <name = "NPC Pack DAT">;
