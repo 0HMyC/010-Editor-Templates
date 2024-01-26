@@ -1,11 +1,11 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//      File: AtlusFieldHitPack_P3F.bt
+//      File: AtlusFieldHitPack_P3.bt
 //   Authors: moddaman
 //   Version: 1.0
-//   Purpose: Parse Field Hit Object Pack *.bin files.
-//  Category: Persona 3 FES
+//   Purpose: Parse 3D Field Hit Object Pack h*_*.bin files.
+//  Category: Persona 3
 // File Mask: 
 //  ID Bytes: 
 //   History: 
@@ -25,15 +25,14 @@ typedef struct hitSep
 typedef struct hitObject
 {
     hitSep Seperator <name = "Seperator", bgcolor=0x0000FF, comment = "Seperates Hit Objects">;
-    u16 Field00 <comment = "Potentially a bitflag?">;
-    u16 Field02;
+    u32 Field00 <comment = "Potentially a bitflag?">;
     u32 ProcedureIndex <comment = "Index of procedure to call from BF">;
     u32 Field08;
     u16 Field0C;
     u16 Field0E <comment = "Bool flag of some sort?">;
     u32 Field10 <format=hex, comment = "Always 0xFFFFFFFF?">;
     u32 Field14;
-    u32 Field18;
+    u32 Field18 <comment = "Bitflag?">;
     u32 Field1C;
 };
 
@@ -44,7 +43,7 @@ typedef struct hitTBL
         // account for padded files with weirdness at end
         if (FileSize() - FTell() < 32)
         {
-            u32 Unknown[(FileSize() - FTell()) / 4] <comment = "May only be padding">;
+            u32 Padding[(FileSize() - FTell()) / 4] <comment = "Assumed to be padding">;
             break;
         }
         hitObject HitObject <name = "Hit Object">;
