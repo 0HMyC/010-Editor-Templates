@@ -15,6 +15,32 @@ typedef ubyte u8;
 typedef ushort u16;
 typedef uint u32;
 
+enum<u8> texChars
+{
+    Makoto = 1,
+    Yukari = 2,
+    Aigis = 3,
+    Mitsuru = 4,
+    Junpei = 5,
+    Fuuka = 6,
+    Akihiko = 7,
+    Ken = 8,
+    Shinji = 9,
+    Koromaru = 10,
+    Ikutsuki = 11,
+    Ryoji = 13,
+    Takaya = 17,
+    Yuko = 21,
+    Chihiro = 27,
+    Rio = 29,
+    Tanaka = 36,
+    Toriumi = 43,
+    Kotone = 99,
+    Kashiwagi = 132,
+    Margaret = 213,
+    Vincent = 214,
+};
+
 typedef struct packHeader
 {
     u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
@@ -32,7 +58,7 @@ typedef struct chunkSep
 typedef struct chunkNPC
 {
     u32 PositionID <bgcolor=0x00FF00>;
-    u8 TextureCharID <comment = "nX_0_0_0.tmx", bgcolor=0x7799FF>;
+    texChars TextureCharID <name = "TextureCharID", comment = "nX_0_0_0.tmx", bgcolor=0x7799FF>;
     u8 TextureVarID <comment = "n0_X_0_0.tmx", bgcolor=0x5577DD>;
     u16 Field06 <format=hex, comment = "Always 0xE803?", bgcolor=0x00FFFF>;
     u32 ProcedureIndex <comment = "Calls script procedure from corresponding BF file", bgcolor=0x00FF00>;

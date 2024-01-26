@@ -1,0 +1,111 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: AtlusFieldNPCTable_P3F.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse Field NPC *.bin files.
+//  Category: Persona 3 FES
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef ubyte u8;
+typedef ushort u16;
+typedef uint u32;
+
+enum<u16> times
+{
+    EarlyMorning = 0,
+    Morning = 1,
+    Lunchtime = 2,
+    Afternoon = 3,
+    AfterSchool = 4,
+    Evening = 5,
+};
+
+typedef struct calendarGroup
+{
+    u16 OnMonth <bgcolor=0xFF77FF>;
+    u16 OnDay <bgcolor=0xDD55DD>;
+    times OnTime <bgcolor=0xFF5555>;
+    u16 Field06 <format=hex, bgcolor=0x00FFFF>;
+    u32 Field08 <format=hex, bgcolor=0x00FFFF, comment = "Constant 0xFFFFFFFF?">;
+    u32 GroupID <comment = "NPC Group to load from ??? FBN maybe?", bgcolor=0x00FF00>;
+    u32 Field10 <format=hex, bgcolor=0x00FFFF>;
+    u32 Field14 <format=hex, bgcolor=0x00FFFF>;
+    u32 Field18 <format=hex, bgcolor=0x00FFFF>;
+    u32 Field1C <format=hex, bgcolor=0x00FFFF>;
+};
+
+typedef struct unknownGroup
+{
+    u16 Field00 <bgcolor=0x00FFFF, comment = "Model ID?">;
+    u16 Field02 <bgcolor=0x00FFFF, comment = "Character ID?">;
+    u16 Field04 <bgcolor=0x00FFFF>;
+    u16 Field06 <bgcolor=0x00FFFF>;
+    u16 Field08 <bgcolor=0x00FFFF>;
+    u16 Field0A <bgcolor=0x00FFFF>;
+    u16 Field0C <bgcolor=0x00FFFF>;
+    u16 Field0E <bgcolor=0x00FFFF>;
+    u32 Field10 <format=hex, bgcolor=0x00FFFF>;
+    u16 Field14 <bgcolor=0x00FFFF>;
+    u16 Field16 <bgcolor=0x00FFFF>;
+    u16 Field18 <bgcolor=0x00FFFF>;
+    u16 Field1A <bgcolor=0x00FFFF>;
+    u16 Field1C <bgcolor=0x00FFFF>;
+    u16 Field1E <bgcolor=0x00FFFF>;
+    u16 Field20 <bgcolor=0x00FFFF>;
+    u16 Field22 <bgcolor=0x00FFFF>;
+};
+
+typedef struct unknownGroup2
+{
+    u16 Field00;
+    u16 Field02;
+    u16 Field04;
+    u16 Field06;
+    u32 Field08;
+    u32 Field0C;
+};
+
+typedef struct unknownDefNPC
+{
+    u16 Field00;
+    u16 Field02;
+    u16 ModelID <comment = "N%05d.RMD">;
+    u16 Field06;
+    u32 Field08 <format=hex, comment = "Constant value 0xFFFFFFFF?">;
+    u32 Field0C <comment = "Script index or smth?">;
+    u16 Field10;
+    u16 Field12;
+    u32 Field14;
+    u32 Field18;
+    u32 Field1C;
+};
+
+typedef struct calendarArr(u32 size)
+{
+    while (size > 0)
+    {
+        calendarGroup CalendarGroup <name = "Group">;
+        size -= 1;
+    }
+};
+
+typedef struct npcTblBIN
+{
+    //u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
+    u32 TotalGroups <bgcolor=0xFF0000>;
+    u32 UnknownFF[7] <format=hex, bgcolor=0x00FFFF>;
+    calendarArr LoadDates(TotalGroups) <name = "Calendar NPC Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
+    Printf("There is unknown data from offset 0x%X!", FTell());
+    u32 unknown[16];
+    unknownDefNPC UnkDef[10];
+    //unknownGroup2 UnknownGroups[100];
+    //unknownGroup UnknownGroups[100];
+    //u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+};
+
+npcTblBIN FILE <name = "NPC Table BIN">;
