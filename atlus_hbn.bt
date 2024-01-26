@@ -1,3 +1,16 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//   File: AtlusFieldHitPack_P3.bt
+//   Authors: Tupelov, moddaman
+//   Version: 1.0
+//   Purpose: Parse 3D Field *.hbn files.
+//  Category: Persona 3
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
 typedef ubyte u8;
 typedef short s16;
 typedef ushort u16;
@@ -34,29 +47,74 @@ typedef struct
 	float Rot <name = "Rotation">;
 } HBNEntryType2 <name = "Type 2 Entries">;
 
+typedef struct
+{
+	u8 EntryNum <name = "Entry Number">;
+	u8 Field01;
+	u16 Field02;
+	float Field04 <comment = "X Pos?">;
+	float Field08 <comment = "Z Pos?">;
+	float Field0C <comment = "Y Pos?">;
+	float Field10 <comment = "Rotation?">;
+} HBNEntryType3 <name = "Type 3 Entries">;
+
+typedef struct
+{
+	u8 Field00 <comment = "Entry Number?">;
+	u8 Field01;
+	u16 Field02;
+	float Field04 <comment = "X Pos?">;
+	float Field08 <comment = "Z Pos?">;
+	float Field0C <comment = "Y Pos?">;
+	float Field10 <comment = "Possibly u32? Rotation?">;
+} HBNEntryType4 <name = "Type 4 Entries">;
+
+typedef struct
+{
+	u8 Field00 <comment = "Entry Number?">;
+	u8 Field01;
+	u16 Field02;
+	float Field04 <comment = "X Pos?">;
+	float Field08 <comment = "Z Pos?">;
+	float Field0C <comment = "Y Pos?">;
+	float Field10 <comment = "Possibly u32? Rotation?">;
+} HBNEntryType7 <name = "Type 7 Entries">;
+
+typedef struct TypeListMetadata
+{
+	u32 Number <comment = "Number of entries for this type">;
+	u32 EntrySize <comment = "Size in bytes(?) of one entry">;
+};
+
+typedef struct HBNHeader
+{
+	struct
+	{
+		u16 Major <name = "Version Major Number">;
+		u16 Minor <name = "Version Minor Number">;
+	} Version;
+	TypeListMetadata Type1 <name = "Type 1 Metadata">;
+	TypeListMetadata Type2 <name = "Type 2 Metadata">;
+	TypeListMetadata Type3 <name = "Type 3 Metadata">;
+	TypeListMetadata Type4 <name = "Type 4 Metadata">;
+	TypeListMetadata Type5 <name = "Type 5 Metadata">;
+	TypeListMetadata Type6 <name = "Type 6 Metadata">;
+	TypeListMetadata Type7 <name = "Type 7 Metadata">;
+	TypeListMetadata Type8 <name = "Type 8 Metadata">;
+};
+
 typedef struct HBNFile
 {
-    u32 Field01;
-	u16 VersionMajor <name = "Version Major Number">;
-	u16 VersionMinor <name = "Version Minor Number">;
-	u32 NumType1Entries <name = "Number of Type 1 Entries">;
-	u32 Type1EntrySize <name = "Size of Type 1 Entry">;
-	u32 NumType2Entries <name = "Number of Type 2 Entries">;
-	u32 Type2EntrySize <name = "Size of Type 2 Entry">;
-	u32 NumType3Entries <name = "Number of Type 3 Entries">;
-	u32 Type3EntrySize <name = "Size of Type 3 Entry">;
-	u32 NumType4Entries <name = "Number of Type 4 Entries">;
-	u32 TypeEntrySize <name = "Size of Type 4 Entry">;
-	u32 NumType5Entries <name = "Number of Type 5 Entries">;
-	u32 Type5EntrySize <name = "Size of Type 5 Entry">;
-	u32 NumType6Entries <name = "Number of Type 6 Entries">;
-	u32 Type6EntrySize <name = "Size of Type 6 Entry">;
-	u32 NumType7Entries <name = "Number of Type 7 Entries">;
-	u32 Type7EntrySize <name = "Size of Type 7 Entry">;
-	u32 NumTypeEntries <name = "Number of Type 8 Entries">;
-	u32 TypeEntrySize <name = "Size of Type 8 Entry">;
-	HBNEntryType1 Entry1Data[ NumType1Entries ];
-	HBNEntryType2 Entry2Data[ NumType2Entries ];
+	u32 Magic <format=hex>;
+	HBNHeader Header;
+	HBNEntryType1 Entry1Data[ Header.Type1.Number ];
+	HBNEntryType2 Entry2Data[ Header.Type2.Number ];
+	HBNEntryType3 Entry3Data[ Header.Type3.Number ];
+	HBNEntryType4 Entry4Data[ Header.Type4.Number ];
+	u8 Entry5Data[ Header.Type5.Number * Header.Type5.EntrySize ];
+	u8 Entry6Data[ Header.Type6.Number * Header.Type6.EntrySize ];
+	HBNEntryType7 Entry7Data[ Header.Type7.Number ];
+	u8 Entry8Data[ Header.Type8.Number * Header.Type8.EntrySize ];
 };
 
 HBNFile HBN;
