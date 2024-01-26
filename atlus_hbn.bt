@@ -78,6 +78,17 @@ typedef struct
 	float Field08 <comment = "Z Pos?">;
 	float Field0C <comment = "Y Pos?">;
 	float Field10 <comment = "Possibly u32? Rotation?">;
+} HBNEntryType5 <name = "Type 5 Entries">;
+
+typedef struct
+{
+	u8 Field00 <comment = "Entry Number?">;
+	u8 Field01;
+	u16 Field02;
+	float Field04 <comment = "X Pos?">;
+	float Field08 <comment = "Z Pos?">;
+	float Field0C <comment = "Y Pos?">;
+	float Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType7 <name = "Type 7 Entries">;
 
 typedef struct TypeListMetadata
@@ -86,13 +97,8 @@ typedef struct TypeListMetadata
 	u32 EntrySize <comment = "Size in bytes(?) of one entry">;
 };
 
-typedef struct HBNHeader
+typedef struct TypeList
 {
-	struct
-	{
-		u16 Major <name = "Version Major Number">;
-		u16 Minor <name = "Version Minor Number">;
-	} Version;
 	TypeListMetadata Type1 <name = "Type 1 Metadata">;
 	TypeListMetadata Type2 <name = "Type 2 Metadata">;
 	TypeListMetadata Type3 <name = "Type 3 Metadata">;
@@ -103,18 +109,56 @@ typedef struct HBNHeader
 	TypeListMetadata Type8 <name = "Type 8 Metadata">;
 };
 
-typedef struct HBNFile
+typedef struct HBNHeader
 {
 	u32 Magic <format=hex>;
+	struct
+	{
+		u16 Major <name = "Version Major Number">;
+		u16 Minor <name = "Version Minor Number">;
+	} Version;
+};
+
+typedef struct segF102
+{
+	u32 Unknown[3] <comment = "Padding?">;
+	u32 Field0C <comment = "Segment identifier?">;
+	u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Varying types of data in here? Possibly debug?">;
+};
+
+u8 checkForSegF102(int64 fPos)
+{
+	if (ReadUInt(fPos + 12) == 753)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+typedef struct HBNFile
+{
 	HBNHeader Header;
-	HBNEntryType1 Entry1Data[ Header.Type1.Number ];
-	HBNEntryType2 Entry2Data[ Header.Type2.Number ];
-	HBNEntryType3 Entry3Data[ Header.Type3.Number ];
-	HBNEntryType4 Entry4Data[ Header.Type4.Number ];
-	u8 Entry5Data[ Header.Type5.Number * Header.Type5.EntrySize ];
-	u8 Entry6Data[ Header.Type6.Number * Header.Type6.EntrySize ];
-	HBNEntryType7 Entry7Data[ Header.Type7.Number ];
-	u8 Entry8Data[ Header.Type8.Number * Header.Type8.EntrySize ];
+	Printf("Reading version %d.%d HBN!\n", Header.Version.Major, Header.Version.Minor);
+	TypeList EntryTypeList;
+	// TODO: make this not throw warnings maybe? Doesn't cause problems but it looks ugly imo
+	HBNEntryType1 Entry1Data[ EntryTypeList.Type1.Number ];
+	HBNEntryType2 Entry2Data[ EntryTypeList.Type2.Number ];
+	HBNEntryType3 Entry3Data[ EntryTypeList.Type3.Number ];
+	HBNEntryType4 Entry4Data[ EntryTypeList.Type4.Number ];
+	HBNEntryType5 Entry5Data[ EntryTypeList.Type5.Number ];
+	u8 Entry6Data[ EntryTypeList.Type6.Number * EntryTypeList.Type6.EntrySize ];
+	HBNEntryType7 Entry7Data[ EntryTypeList.Type7.Number ];
+	u8 Entry8Data[ EntryTypeList.Type8.Number * EntryTypeList.Type8.EntrySize ];
+	// HBN's can have other and varying types of data after this point, we need to
+	// dynamically check what that data is it seems
+	if (checkForSegF102(FTell()))
+	{
+		segF102 UnknownSegment;
+	}
+	else
+	{
+		u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Possibly debug data?">;
+	}
 };
 
 HBNFile HBN;
