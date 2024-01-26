@@ -12,7 +12,6 @@
 //------------------------------------------------
 
 typedef ubyte u8;
-//typedef ushort u16;
 typedef uint u32;
 
 enum<u8> times
@@ -46,10 +45,10 @@ typedef struct calendarArr(u32 size)
 
 typedef struct npcTblDAT
 {
-    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
-    u32 TotalGroups <bgcolor=0xFF0000>;
-    calendarArr LoadDates(TotalGroups) <name = "Calendar NPC Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
+    u32 Magic <format=hex, name = "Magic", comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
+    u32 TotalGroups <name = "Total Groups", bgcolor=0xFF0000>;
+    calendarArr LoadDates(TotalGroups) <name = "Calendar Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
     u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
 };
 
-npcTblDAT FILE <name = "NPC Table DAT">;
+npcTblDAT FILE;

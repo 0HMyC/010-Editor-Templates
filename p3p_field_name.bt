@@ -6,7 +6,7 @@
 //   Version: 1.0
 //   Purpose: Parse Field *_name.dat files.
 //  Category: Persona 3 Portable
-// File Mask: *_name.dat
+// File Mask: 
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
@@ -15,16 +15,16 @@ typedef uint u32;
 
 typedef struct objName
 {
-    char Name[64];
+    char Name[64] <bgcolor=0xDDDD00>;
 };
 
-typedef struct FieldDAT
+typedef struct nameDAT
 {
     // not sure if magic bytes or a version number
-    u32 MagicOrVer <name = "Magic", bgcolor=0x00FF00>;
+    u32 MagicOrVer <name = "Magic", bgcolor=0x00BB00>;
     u32 TotalNames <name = "Total Names", bgcolor=0xFF0000>;
     objName ObjectNames[TotalNames] <name = "Object Names", comment = "String can get cut-off in-game if too long">;
     u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
 };
 
-FieldDAT FILE;
+nameDAT FILE;
