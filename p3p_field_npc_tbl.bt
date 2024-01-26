@@ -6,7 +6,7 @@
 //   Version: 1.0
 //   Purpose: Parse Field NPC *_tbl.dat files.
 //  Category: Persona 3 Portable
-// File Mask: *_tbl.dat
+// File Mask: 
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
@@ -29,7 +29,7 @@ typedef struct calendarGroup
 {
     u8 OnMonth <bgcolor=0xFF77FF>;
     u8 OnDay <bgcolor=0xDD55DD>;
-    times OnTime <bgcolor=0xFF5555>;
+    times OnTime <bgcolor=0xFFFF00>;
     u8 Field03 <format=hex, bgcolor=0x00FFFF>;
     u32 Field04 <format=hex, bgcolor=0x00FFFF>;
     u32 GroupID <comment = "NPC Group to load from *_pck.dat", bgcolor=0x00FF00>;
@@ -46,7 +46,7 @@ typedef struct calendarArr(u32 size)
 
 typedef struct npcTblDAT
 {
-    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
+    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
     u32 TotalGroups <bgcolor=0xFF0000>;
     calendarArr LoadDates(TotalGroups) <name = "Calendar NPC Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
     u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;

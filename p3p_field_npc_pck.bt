@@ -43,7 +43,7 @@ enum<u8> texChars
 
 typedef struct packHeader
 {
-    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
+    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
     u32 TotalSegments <comment = "Increments by 0x10", bgcolor=0xFF0000>;
 };
 
@@ -58,11 +58,11 @@ typedef struct chunkSep
 typedef struct chunkNPC
 {
     u32 PositionID <bgcolor=0x00FF00>;
-    texChars TextureCharID <name = "TextureCharID", comment = "nX_0_0_0.tmx", bgcolor=0x7799FF>;
-    u8 TextureVarID <comment = "n0_X_0_0.tmx", bgcolor=0x5577DD>;
-    u16 Field06 <format=hex, comment = "Always 0xE803?", bgcolor=0x00FFFF>;
-    u32 ProcedureIndex <comment = "Calls script procedure from corresponding BF file", bgcolor=0x00FF00>;
-    u32 HideOnFlag <comment = "Hides NPC if bitflag is enabled", bgcolor=0x22FFFF>;
+    texChars TextureCharID <name = "TextureCharID", comment = "nX_0_0_0.tmx", bgcolor=0xFF77FF>;
+    u8 TextureVarID <comment = "n0_X_0_0.tmx", bgcolor=0xDD55DD>;
+    u16 Field06 <format=hex, comment = "Always 0xE803?", bgcolor=0x0000FF>;
+    u32 ProcedureIndex <comment = "Calls script procedure from corresponding BF file", bgcolor=0xFFFF00>;
+    u32 HideOnFlag <comment = "Hides NPC if bitflag is enabled", bgcolor=0x0077FF>;
 };
 
 // Check if the next segment of 0x10 bytes is an NPC Chunk Seperator
@@ -77,7 +77,7 @@ ubyte isNextStart(int64 fPos)
 
 typedef struct npcGroup(u8 atEOF)
 {
-    chunkSep Seperator <name = "Seperator", bgcolor=0x0000FF, comment = "Seperates NPC Groups">;
+    chunkSep Seperator <name = "Seperator", comment = "Seperates NPC Groups", bgcolor=0x0000FF>;
     if (atEOF == 0)
     {
         while (isNextStart(FTell()) == 0)

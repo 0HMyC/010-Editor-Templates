@@ -16,9 +16,9 @@ typedef uint u32;
 
 typedef struct objectNPC
 {
-    u32 NPCID <name = "ID", fgcolor=0x00FF00>;
-    u16 NPCX <name = "X Position", fgcolor=0xFFFF00>;
-    u16 NPCY <name = "Y Position", fgcolor=0xEEEE00>;
+    u32 NPCID <name = "ID", bgcolor=0x00FF00>;
+    u16 NPCX <name = "X Position", bgcolor=0xFFFF00>;
+    u16 NPCY <name = "Y Position", bgcolor=0xDDDD00>;
     u16 Field08 <format=hex, comment = "Padding?", bgcolor=0x00FFFF>;
     u16 Field0A <format=hex, comment = "Denotes end of segment?", bgcolor=0xFF00FF>;
 };
