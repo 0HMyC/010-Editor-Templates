@@ -13,6 +13,7 @@
 
 typedef ubyte u8;
 typedef ushort u16;
+typedef short s16;
 typedef uint u32;
 typedef int s32;
 
@@ -23,36 +24,32 @@ enum<u8> TriggerTypes
 };
 
 
-typedef struct hitSep
-{
-    s32 EnableOnFlag <comment = "If set flag is disabled, object is disabled">;
-    u32 UnknownFF[2] <format=hex, comment = "Always 0xFFFFFFFF?">;
-};
-
 typedef struct hitObject
 {
-    hitSep Seperator <name = "Seperator", bgcolor=0x0000FF, comment = "Seperates Hit Objects">;
-    u8 Field00;
-    u8 Field01 <comment = "Controls trigger type?">;
-    u16 Field02;
-    u32 ProcedureIndex <comment = "Index of procedure to call from BF">;
-    u32 Field08;
-    u16 Field0C;
-    u16 Field0E <comment = "Bool flag of some sort?">;
-    u32 Field10 <format=hex, comment = "Always 0xFFFFFFFF?">;
-    u32 Field14 <comment = "If Field01 is set to 7, this must equal 3?">;
-    u32 HideOnFlag <comment = "Hides object if flag is enabled">;
-    u32 Field1C;
+    s32 EnableOnFlag <comment = "If set flag is disabled, object is disabled", bgcolor=0x00FF00>;
+    u32 UnknownFF[2] <format=hex, comment = "Always 0xFFFFFFFF?", bgcolor=0x0000FF>;
+    u8 Field00 <bgcolor=0xDDDD00>;
+    u8 Field01 <comment = "Controls trigger type?", bgcolor=0xFFFF00>;
+    u16 Field02 <bgcolor=0x00FFFF>;
+    s16 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor=0xFF00FF>;
+    u16 Field06 <bgcolor=0x00FFFF>;
+    u32 Field08 <bgcolor=0x00FFFF>;
+    u16 Field0C <bgcolor=0x00FFFF>;
+    u16 Field0E <comment = "Bool flag of some sort?", bgcolor=0xFF0000>;
+    u32 Field10 <format=hex, comment = "Always 0xFFFFFFFF?", bgcolor=0x00FFFF>;
+    u32 Field14 <comment = "If Field01 is set to 7, this must equal 3?", bgcolor=0xFF0000>;
+    u32 HideOnFlag <comment = "Hides object if flag is enabled", bgcolor=0x0088FF>;
+    u32 Field1C <bgcolor=0x00FFFF>;
 };
 
 typedef struct hitTBL
 {
     while (FTell() < FileSize())
     {
-        // account for padded files with weirdness at end
+        // account for the possibility of padded files with weirdness at end
         if (FileSize() - FTell() < 32)
         {
-            u32 Padding[(FileSize() - FTell()) / 4] <comment = "Assumed to be padding">;
+            u32 Padding[(FileSize() - FTell()) / 4] <comment = "Assumed to be padding", bgcolor=0x0000FF>;
             break;
         }
         hitObject HitObject <name = "Hit Object">;
