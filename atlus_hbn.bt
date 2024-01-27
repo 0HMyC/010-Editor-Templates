@@ -1,10 +1,10 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//   File: AtlusFieldHitPack_P3.bt
+//   File: Atlus3DFieldHBN_P3.bt
 //   Authors: Tupelov, moddaman
 //   Version: 1.0
-//   Purpose: Parse 3D Field *.hbn files.
+//   Purpose: Parse 3D Field *.HBN files.
 //  Category: Persona 3
 // File Mask: 
 //  ID Bytes: 
@@ -19,146 +19,160 @@ typedef float f32;
 
 typedef struct
 {
-	u8 EntryNum <name = "Entry Number">;
-	u8 Unknown1;
-	u8 Unknown2;
-	u8 Unknown3;
-	byte Unknown4;
-	u8 Unknown5;
-	u8 Unknown6;
-	u8 Unknown7;
-	float YPos <name = "Y Pos">;
-	float ZPos <name = "Z Pos">;
-	float XPos <name = "X Pos">;
-	float Unknown11;
-	float Unknown12;
-	float Unknown13;
-} HBNEntryType1 <name = "Type 1 Entries">;
+    u8 EntryNum <name = "Entry Number">;
+    u8 Unknown1;
+    u8 Unknown2;
+    u8 Unknown3;
+    byte Unknown4;
+    u8 Unknown5;
+    u8 Unknown6;
+    u8 Unknown7;
+    struct
+    {
+        float YPos <name = "Y Pos">;
+        float ZPos <name = "Z Pos">;
+        float XPos <name = "X Pos">;
+    } DefPos <name = "Define Position">;
+    struct
+    {
+        float YHeight <name = "Y Height">;
+        float ZLength <name = "Z Length">;
+        float XLength <name = "X Length">;
+    } DefArea <name = "Define Area">;
+} HBNEntryType1 <name = "Trigger Area Entries", comment = "Defines triggerable area">;
 
 typedef struct
 {
-	u8 EntryNum <name = "Entry Number">;
-	u8 Unknown1;
-	u8 Unknown2;
-	u8 Unknown3;
-	float XPos <name = "X Pos">;
-	float ZPos <name = "Z Pos">;
-	float YPos <name = "Y Pos">;
-	float Rot <name = "Rotation">;
+    u8 EntryNum <name = "Entry Number">;
+    u8 Unknown1;
+    u8 Unknown2;
+    u8 Unknown3;
+    float XPos <name = "X Pos">;
+    float ZPos <name = "Z Pos">;
+    float YPos <name = "Y Pos">;
+    float Rot <name = "Rotation">;
 } HBNEntryType2 <name = "Type 2 Entries">;
 
 typedef struct
 {
-	u8 EntryNum <name = "Entry Number">;
-	u8 Field01;
-	u16 Field02;
-	float Field04 <comment = "X Pos?">;
-	float Field08 <comment = "Z Pos?">;
-	float Field0C <comment = "Y Pos?">;
-	float Field10 <comment = "Rotation?">;
+    u8 EntryNum <name = "Entry Number">;
+    u8 Field01;
+    u16 Field02;
+    float Field04 <comment = "X Pos?">;
+    float Field08 <comment = "Z Pos?">;
+    float Field0C <comment = "Y Pos?">;
+    float Field10 <comment = "Rotation?">;
 } HBNEntryType3 <name = "Type 3 Entries">;
 
 typedef struct
 {
-	u8 Field00 <comment = "Entry Number?">;
-	u8 Field01;
-	u16 Field02;
-	float Field04 <comment = "X Pos?">;
-	float Field08 <comment = "Z Pos?">;
-	float Field0C <comment = "Y Pos?">;
-	float Field10 <comment = "Possibly u32? Rotation?">;
+    u8 EntryNum <name = "Entry Number">;
+    u8 Field01;
+    u16 Field02;
+    float Field04 <comment = "X Pos?">;
+    float Field08 <comment = "Z Pos?">;
+    float Field0C <comment = "Y Pos?">;
+    float Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType4 <name = "Type 4 Entries">;
 
 typedef struct
 {
-	u8 Field00 <comment = "Entry Number?">;
-	u8 Field01;
-	u16 Field02;
-	float Field04 <comment = "X Pos?">;
-	float Field08 <comment = "Z Pos?">;
-	float Field0C <comment = "Y Pos?">;
-	float Field10 <comment = "Possibly u32? Rotation?">;
+    u8 Field00 <comment = "Entry Number?">;
+    u8 Field01;
+    u16 Field02;
+    float Field04 <comment = "X Pos?">;
+    float Field08 <comment = "Z Pos?">;
+    float Field0C <comment = "Y Pos?">;
+    float Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType5 <name = "Type 5 Entries">;
 
 typedef struct
 {
-	u8 Field00 <comment = "Entry Number?">;
-	u8 Field01;
-	u16 Field02;
-	float Field04 <comment = "X Pos?">;
-	float Field08 <comment = "Z Pos?">;
-	float Field0C <comment = "Y Pos?">;
-	float Field10 <comment = "Possibly u32? Rotation?">;
+    u8 EntryNum <name = "Entry Number">;
+    u8 Field01;
+    u16 Field02;
+    float Field04 <comment = "X Pos?">;
+    float Field08 <comment = "Z Pos?">;
+    float Field0C <comment = "Y Pos?">;
+    float Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType7 <name = "Type 7 Entries">;
 
 typedef struct TypeListMetadata
 {
-	u32 Number <comment = "Number of entries for this type">;
-	u32 EntrySize <comment = "Size in bytes(?) of one entry">;
+    u32 Number <comment = "Number of entries for this type">;
+    u32 EntrySize <comment = "Size in bytes(?) of one entry">;
 };
 
 typedef struct TypeList
 {
-	TypeListMetadata Type1 <name = "Type 1 Metadata">;
-	TypeListMetadata Type2 <name = "Type 2 Metadata">;
-	TypeListMetadata Type3 <name = "Type 3 Metadata">;
-	TypeListMetadata Type4 <name = "Type 4 Metadata">;
-	TypeListMetadata Type5 <name = "Type 5 Metadata">;
-	TypeListMetadata Type6 <name = "Type 6 Metadata">;
-	TypeListMetadata Type7 <name = "Type 7 Metadata">;
-	TypeListMetadata Type8 <name = "Type 8 Metadata">;
+    TypeListMetadata Type1 <name = "Type 1 Metadata">;
+    TypeListMetadata Type2 <name = "Type 2 Metadata">;
+    TypeListMetadata Type3 <name = "Type 3 Metadata">;
+    TypeListMetadata Type4 <name = "Type 4 Metadata">;
+    TypeListMetadata Type5 <name = "Type 5 Metadata">;
+    TypeListMetadata Type6 <name = "Type 6 Metadata">;
+    TypeListMetadata Type7 <name = "Type 7 Metadata">;
+    TypeListMetadata Type8 <name = "Type 8 Metadata">;
 };
 
 typedef struct HBNHeader
 {
-	u32 Magic <format=hex>;
-	struct
-	{
-		u16 Major <name = "Version Major Number">;
-		u16 Minor <name = "Version Minor Number">;
-	} Version;
+    u32 Magic <format=hex>;
+    struct
+    {
+        u16 Major <name = "Version Major Number">;
+        u16 Minor <name = "Version Minor Number">;
+    } Version;
 };
 
 typedef struct segF102
 {
-	u32 Unknown[3] <comment = "Padding?">;
-	u32 Field0C <comment = "Segment identifier?">;
-	u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Varying types of data in here? Possibly debug?">;
+    u32 Unknown[3] <comment = "Padding?">;
+    u32 Field0C <comment = "Segment identifier?">;
+    u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Varying types of data in here? Possibly debug?">;
 };
 
 u8 checkForSegF102(int64 fPos)
 {
-	if (ReadUInt(fPos + 12) == 753)
-	{
-		return 1;
-	}
-	return 0;
+    if (ReadUInt(fPos + 12) == 753)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 typedef struct HBNFile
 {
-	HBNHeader Header;
-	Printf("Reading version %d.%d HBN!\n", Header.Version.Major, Header.Version.Minor);
-	TypeList EntryTypeList;
-	// TODO: make this not throw warnings maybe? Doesn't cause problems but it looks ugly imo
-	HBNEntryType1 Entry1Data[ EntryTypeList.Type1.Number ];
-	HBNEntryType2 Entry2Data[ EntryTypeList.Type2.Number ];
-	HBNEntryType3 Entry3Data[ EntryTypeList.Type3.Number ];
-	HBNEntryType4 Entry4Data[ EntryTypeList.Type4.Number ];
-	HBNEntryType5 Entry5Data[ EntryTypeList.Type5.Number ];
-	u8 Entry6Data[ EntryTypeList.Type6.Number * EntryTypeList.Type6.EntrySize ];
-	HBNEntryType7 Entry7Data[ EntryTypeList.Type7.Number ];
-	u8 Entry8Data[ EntryTypeList.Type8.Number * EntryTypeList.Type8.EntrySize ];
-	// HBN's can have other and varying types of data after this point, we need to
-	// dynamically check what that data is it seems
-	if (checkForSegF102(FTell()))
-	{
-		segF102 UnknownSegment;
-	}
-	else
-	{
-		u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Possibly debug data?">;
-	}
+    HBNHeader Header;
+    Printf("Reading version %d.%d HBN!\n", Header.Version.Major, Header.Version.Minor);
+    TypeList EntryTypeList;
+    // this is awful on the eyes but it stops 010 from throwing warnings
+    if (EntryTypeList.Type1.Number > 0)
+        HBNEntryType1 Entry1Data[ EntryTypeList.Type1.Number ];
+    if (EntryTypeList.Type2.Number > 0)
+        HBNEntryType2 Entry2Data[ EntryTypeList.Type2.Number ];
+    if (EntryTypeList.Type3.Number > 0)
+        HBNEntryType3 Entry3Data[ EntryTypeList.Type3.Number ];
+    if (EntryTypeList.Type4.Number > 0)
+        HBNEntryType4 Entry4Data[ EntryTypeList.Type4.Number ];
+    if (EntryTypeList.Type5.Number > 0)
+        HBNEntryType5 Entry5Data[ EntryTypeList.Type5.Number ];
+    if (EntryTypeList.Type6.Number > 0)
+        u8 Entry6Data[ EntryTypeList.Type6.Number * EntryTypeList.Type6.EntrySize ];
+    if (EntryTypeList.Type7.Number > 0)
+        HBNEntryType7 Entry7Data[ EntryTypeList.Type7.Number ];
+    if (EntryTypeList.Type8.Number > 0)
+        u8 Entry8Data[ EntryTypeList.Type8.Number * EntryTypeList.Type8.EntrySize ];
+    // HBN's can have other and varying types of data after this point, we need to
+    // dynamically check what that data is it seems
+    if (checkForSegF102(FTell()))
+    {
+        segF102 UnknownSegment;
+    }
+    else
+    {
+        u32 UnknownData[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF, comment = "Possibly debug data?">;
+    }
 };
 
 HBNFile HBN;
