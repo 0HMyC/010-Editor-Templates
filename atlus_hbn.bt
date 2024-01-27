@@ -26,15 +26,15 @@ typedef struct
     u16 Unknown4 <format=hex, comment = "Always set to 0x00A8?", bgcolor = 0x00FFFF>;
     struct
     {
-        float YPos <name = "Y Pos", bgcolor=0x00FF00>;
-        float ZPos <name = "Z Pos", bgcolor=0xFF0000>;
-        float XPos <name = "X Pos", bgcolor=0xFF00FF>;
+        f32 YPos <name = "Y Pos", bgcolor=0x00FF00>;
+        f32 ZPos <name = "Z Pos", bgcolor=0xFF0000>;
+        f32 XPos <name = "X Pos", bgcolor=0xFF00FF>;
     } DefPos <name = "Define Position">;
     struct
     {
-        float YHeight <name = "Y - Height", bgcolor=0x00CCAA>;
-        float ZWidth <name = "Z - Width", bgcolor=0xCCAA00>;
-        float XLength <name = "X - Length", bgcolor=0x6677EE>;
+        f32 YHeight <name = "Y - Height", bgcolor=0x00CCAA>;
+        f32 ZWidth <name = "Z - Width", bgcolor=0xCCAA00>;
+        f32 XLength <name = "X - Length", bgcolor=0x6677EE>;
     } DefArea <name = "Define Area">;
     if (Unknown1 != 0x34)
     {
@@ -59,10 +59,10 @@ typedef struct
     u8 EntryNum <name = "Entry Number", bgcolor=0x7700CC>;
     u8 Unknown1 <comment = "Always set to 56?", bgcolor = 0x00FFFF>;
     u16 Unknown2 <comment = "Always set to 0?", bgcolor = 0x00FFFF>;
-    float XPos <name = "X Pos", bgcolor=0xFF00FF>;
-    float ZPos <name = "Z Pos", bgcolor=0xFF0000>;
-    float YPos <name = "Y Pos", bgcolor=0x00FF00>;
-    float Rot <name = "Rotation", bgcolor=0xFFFF00>;
+    f32 XPos <name = "X Pos", bgcolor=0xFF00FF>;
+    f32 ZPos <name = "Z Pos", bgcolor=0xFF0000>;
+    f32 YPos <name = "Y Pos", bgcolor=0x00FF00>;
+    f32 Rot <name = "Rotation", bgcolor=0xFFFF00>;
     if (Unknown1 != 56)
     {
         Printf("0x%X - HBNEntryType2 Unknown1: %d\n", FTell(), Unknown1);
@@ -78,10 +78,10 @@ typedef struct
     u8 EntryNum <name = "Entry Number">;
     u8 Field01;
     u16 Field02;
-    float Field04 <comment = "X Pos?">;
-    float Field08 <comment = "Z Pos?">;
-    float Field0C <comment = "Y Pos?">;
-    float Field10 <comment = "Rotation?">;
+    f32 Field04 <comment = "X Pos?">;
+    f32 Field08 <comment = "Z Pos?">;
+    f32 Field0C <comment = "Y Pos?">;
+    f32 Field10 <comment = "Rotation?">;
 } HBNEntryType3 <name = "Type 3 Entries">;
 
 typedef struct
@@ -89,10 +89,10 @@ typedef struct
     u8 EntryNum <name = "Entry Number">;
     u8 Field01;
     u16 Field02;
-    float Field04 <comment = "X Pos?">;
-    float Field08 <comment = "Z Pos?">;
-    float Field0C <comment = "Y Pos?">;
-    float Field10 <comment = "Possibly u32? Rotation?">;
+    f32 Field04 <comment = "X Pos?">;
+    f32 Field08 <comment = "Z Pos?">;
+    f32 Field0C <comment = "Y Pos?">;
+    f32 Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType4 <name = "Type 4 Entries">;
 
 typedef struct
@@ -100,10 +100,10 @@ typedef struct
     u8 Field00 <comment = "Entry Number?">;
     u8 Field01;
     u16 Field02;
-    float Field04 <comment = "X Pos?">;
-    float Field08 <comment = "Z Pos?">;
-    float Field0C <comment = "Y Pos?">;
-    float Field10 <comment = "Possibly u32? Rotation?">;
+    f32 Field04 <comment = "X Pos?">;
+    f32 Field08 <comment = "Z Pos?">;
+    f32 Field0C <comment = "Y Pos?">;
+    f32 Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType5 <name = "Type 5 Entries">;
 
 typedef struct
@@ -113,12 +113,12 @@ typedef struct
     u16 Field02;
     s16 Field04 <format=hex>;
     u16 Field06 <format=hex>;    
-    float Field08 <comment = "X Start?">;
-    float Field0C <comment = "Z Start?">;
-    float Field10 <comment = "Y Start?">;
-    float Field14 <comment = "X End?">;
-    float Field18 <comment = "Z End?">;
-    float Field1C <comment = "Y End?">;
+    f32 Field08 <comment = "X Start?">;
+    f32 Field0C <comment = "Z Start?">;
+    f32 Field10 <comment = "Y Start?">;
+    f32 Field14 <comment = "X End?">;
+    f32 Field18 <comment = "Z End?">;
+    f32 Field1C <comment = "Y End?">;
     if (Field01 != 0x54)
     {
         Printf("0x%X - HBNEntryType6 Field01: %d\n", FTell(), Field01);
@@ -142,10 +142,10 @@ typedef struct
     u8 EntryNum <name = "Entry Number">;
     u8 Field01;
     u16 Field02;
-    float Field04 <comment = "X Pos?">;
-    float Field08 <comment = "Z Pos?">;
-    float Field0C <comment = "Y Pos?">;
-    float Field10 <comment = "Possibly u32? Rotation?">;
+    f32 Field04 <comment = "X Pos?">;
+    f32 Field08 <comment = "Z Pos?">;
+    f32 Field0C <comment = "Y Pos?">;
+    f32 Field10 <comment = "Possibly u32? Rotation?">;
 } HBNEntryType7 <name = "Type 7 Entries">;
 
 typedef struct TypeListMetadata
