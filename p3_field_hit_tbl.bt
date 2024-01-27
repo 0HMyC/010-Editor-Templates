@@ -16,23 +16,32 @@ typedef ushort u16;
 typedef uint u32;
 typedef int s32;
 
+enum<u8> TriggerTypes
+{
+    Invisible = 0,
+    Manual = 7,
+};
+
+
 typedef struct hitSep
 {
-    s32 Field00 <comment = "Possibly a bitflag to hide object, else -1?">;
+    s32 EnableOnFlag <comment = "If set flag is disabled, object is disabled">;
     u32 UnknownFF[2] <format=hex, comment = "Always 0xFFFFFFFF?">;
 };
 
 typedef struct hitObject
 {
     hitSep Seperator <name = "Seperator", bgcolor=0x0000FF, comment = "Seperates Hit Objects">;
-    u32 Field00 <comment = "Potentially a bitflag?">;
+    u8 Field00;
+    u8 Field01 <comment = "Controls trigger type?">;
+    u16 Field02;
     u32 ProcedureIndex <comment = "Index of procedure to call from BF">;
     u32 Field08;
     u16 Field0C;
     u16 Field0E <comment = "Bool flag of some sort?">;
     u32 Field10 <format=hex, comment = "Always 0xFFFFFFFF?">;
-    u32 Field14;
-    u32 Field18 <comment = "Bitflag?">;
+    u32 Field14 <comment = "If Field01 is set to 7, this must equal 3?">;
+    u32 HideOnFlag <comment = "Hides object if flag is enabled">;
     u32 Field1C;
 };
 
