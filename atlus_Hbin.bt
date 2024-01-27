@@ -19,8 +19,11 @@ typedef int s32;
 
 enum<u8> TriggerTypes
 {
-    Invisible = 0,
-    Manual = 7,
+    OnContact = 0,
+    OnActionButton2 = 2,
+    OnActionButton4 = 4,
+    OnActionButton6 = 6,
+    OnActionButton7 = 7,
 };
 
 
@@ -30,7 +33,9 @@ typedef struct hitObject
     u32 UnknownFF[2] <format=hex, comment = "Always 0xFFFFFFFF?", bgcolor=0x0000FF>;
     u8 Field00 <bgcolor=0xDDDD00>;
     u8 Field01 <comment = "Controls trigger type?", bgcolor=0xFFFF00>;
+    Printf("0x%X hitObject Field00: %d, hitObject Field01: %d\n", FTell(), Field00, Field01);
     u16 Field02 <bgcolor=0x00FFFF>;
+    //Printf("0x%X hitObject Field02: %d\n", FTell(), Field02);
     s16 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor=0xFF00FF>;
     u16 Field06 <bgcolor=0x00FFFF>;
     u32 Field08 <bgcolor=0x00FFFF>;
