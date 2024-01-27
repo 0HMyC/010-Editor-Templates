@@ -1,3 +1,16 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//   File: Atlus3DFieldFBN_P3.bt
+//   Authors: Tupelov, moddaman
+//   Version: 1.0
+//   Purpose: Parse 3D Field *.FBN files.
+//  Category: Persona 3
+// File Mask: *.FBN
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
 typedef ubyte u8;
 typedef short s16;
 typedef ushort u16;
@@ -6,138 +19,164 @@ typedef float f32;
 
 typedef enum<u16>
 {
-	NPCSpawnPos = 4,// Not sure but this is what I could get from my research
-	NPC = 5,
+    NPCSpawnPos = 4,// Not sure but this is what I could get from my research
+    NPC = 5,
 } MajorType;
 
 typedef struct(u32 Type1EntrySize)
 {
-	u8 Unknown0;
-	u8 Unknown1;
-	u8 Unknown2;
-	u8 Unknown3;
-	MajorType Major <name = "Major">;
-	s16 Minor <name = "Minor">;
-	u8 Res_ID <name = "Res ID">;
-	u8 Unknown;
-	u16 Field000;
-	float CollidRadius <name = "Collision Radius">;
-	float Field002;
-	float Field003;
-	float Field004;
-	float Field005;
-	float Field006 ;
-	float Field007;
-	float Field008;
-	float Field009;
-	float Field010;
-	float Field011 ;
-	float Field012;
-	float Field013;
-	float Field014;
-	float Field015;
-	float Field016 ;
-	float Field017;
-	float YPos <name = "Y Pos">;
-	float Field019;
-	float XPos <name = "X Pos">;
-	float Field021;
-	u32 ShadowType <name = "Shadow Type">;
-	float ShadowRadius <name = "Shadow Radius">;
-	u8 Unknown4;
-	u8 Unknown5;
-	u8 Unknown6;
-	u8 Unknown7;
-	u8 Unknown8;
-	u8 Unknown9;
-	u8 Unknown10;
-	u8 Unknown11;
-	if (Type1EntrySize==320)
-	{
-		float Unknown12;
-		float Unknown13;
-		float Unknown14;
-		float Unknown15;
-		float Unknown16;
-		float Unknown17;
-		float Unknown18;
-		float Unknown19;
-		float Unknown20;
-		float Unknown21;
-		float Unknown22;
-		float Unknown23;
-		float Unknown24;
-		float Unknown25;
-		float Unknown26;
-		float Unknown27;
-		float Unknown28;
-		float Unknown29;
-		float Unknown30;
-		float Unknown31;
-		float Unknown32;
-		float Unknown33;
-		float Unknown34;
-		float Unknown35;
-		float Unknown36;
-		float Unknown37;
-		float Unknown38;
-		float Unknown39;
-		float Unknown40;
-		float Unknown41;
-		float Unknown42;
-		float Unknown43;
-		float Unknown44;
-		float Unknown45;
-		float Unknown46;
-		float Unknown47;
-		float Unknown48;
-		float Unknown49;
-		float Unknown50;
-		float Unknown51;
-		float Unknown52;
-		float Unknown53;
-		float Unknown54;
-		float Unknown55;
-		float Unknown56;
-		float Unknown57;
-		float Unknown58;
-		float Unknown59;
-		float Unknown60;
-		float Unknown61;
-		float Unknown62;
-		float Unknown63;
-	}
+    u8 Unknown0;
+    u8 Unknown1;
+    u8 Unknown2;
+    u8 Unknown3;
+    MajorType Major <name = "Major">;
+    s16 Minor <name = "Minor">;
+    u8 Res_ID <name = "Res ID">;
+    u8 Unknown;
+    u16 Field000;
+    f32 CollidRadius <name = "Collision Radius">;
+    f32 Field002;
+    f32 Field003;
+    f32 Field004;
+    f32 Field005;
+    f32 Field006;
+    f32 Field007;
+    f32 Field008;
+    f32 Field009;
+    f32 Field010;
+    f32 Field011;
+    f32 Field012;
+    f32 Field013;
+    f32 Field014;
+    f32 Field015;
+    f32 Field016;
+    f32 Field017;
+    f32 YPos <name = "Y Pos">;
+    f32 Field019;
+    f32 XPos <name = "X Pos">;
+    f32 Field021;
+    u32 ShadowType <name = "Shadow Type">;
+    f32 ShadowRadius <name = "Shadow Radius">;
+    u8 Unknown4;
+    u8 Unknown5;
+    u8 Unknown6;
+    u8 Unknown7;
+    u8 Unknown8;
+    u8 Unknown9;
+    u8 Unknown10;
+    u8 Unknown11;
+    if (Type1EntrySize==320)
+    {
+        f32 Unknown12;
+        f32 Unknown13;
+        f32 Unknown14;
+        f32 Unknown15;
+        f32 Unknown16;
+        f32 Unknown17;
+        f32 Unknown18;
+        f32 Unknown19;
+        f32 Unknown20;
+        f32 Unknown21;
+        f32 Unknown22;
+        f32 Unknown23;
+        f32 Unknown24;
+        f32 Unknown25;
+        f32 Unknown26;
+        f32 Unknown27;
+        f32 Unknown28;
+        f32 Unknown29;
+        f32 Unknown30;
+        f32 Unknown31;
+        f32 Unknown32;
+        f32 Unknown33;
+        f32 Unknown34;
+        f32 Unknown35;
+        f32 Unknown36;
+        f32 Unknown37;
+        f32 Unknown38;
+        f32 Unknown39;
+        f32 Unknown40;
+        f32 Unknown41;
+        f32 Unknown42;
+        f32 Unknown43;
+        f32 Unknown44;
+        f32 Unknown45;
+        f32 Unknown46;
+        f32 Unknown47;
+        f32 Unknown48;
+        f32 Unknown49;
+        f32 Unknown50;
+        f32 Unknown51;
+        f32 Unknown52;
+        f32 Unknown53;
+        f32 Unknown54;
+        f32 Unknown55;
+        f32 Unknown56;
+        f32 Unknown57;
+        f32 Unknown58;
+        f32 Unknown59;
+        f32 Unknown60;
+        f32 Unknown61;
+        f32 Unknown62;
+        f32 Unknown63;
+    }
 } Type1Entries <name = "Type 1 FBNEntries">;
 
 typedef struct
 {
-	float Unknown0;
-	float Unknown1;
-	float Unknown2;
-	float Unknown3;
-	float Unknown4;
-	float Unknown5;
-	float Unknown6;
-	float Unknown7;
-	float Unknown8;
-	float Unknown9;
-	float Unknown10;
-	float Unknown11;
-	float Unknown12;
-	float Unknown13;
+    f32 Unknown0;
+    f32 Unknown1;
+    f32 Unknown2;
+    f32 Unknown3;
+    f32 Unknown4;
+    f32 Unknown5;
+    f32 Unknown6;
+    f32 Unknown7;
+    f32 Unknown8;
+    f32 Unknown9;
+    f32 Unknown10;
+    f32 Unknown11;
+    f32 Unknown12;
+    f32 Unknown13;
 } Type2Entries <name = "Type 2 FBNEntries">;
+
+typedef struct TypeListMetadata
+{
+    u32 Number <comment = "Number of entries for this type">;
+    u32 EntrySize <comment = "Size in bytes(?) of one entry">;
+};
+
+typedef struct TypeList
+{
+    TypeListMetadata Type1 <name = "Type 1 Metadata">;
+    TypeListMetadata Type2 <name = "Type 2 Metadata">;
+};
+
+typedef struct FBNHeader
+{
+    u32 Magic <format=hex>;
+    struct
+    {
+        u16 Major <name = "Version Major Number">;
+        u16 Minor <name = "Version Minor Number">;
+    } Version;
+};
 
 typedef struct FBNFile
 {
-    u32 Magic;
-	u16 VersionMajor <name = "Version Major Number">;
-	u16 VersionMinor<name = "Version Minor Number">;
-	u32 NumType1Entries <name = "Number of Type 1 Entries">;
-	u32 Type1EntrySize <name = "Size of Type 1 Entry">;
-	u32 NumType2Entries <name = "Number of Type 2 Entries">;
-	u32 Type2EntrySize <name = "Size of Type 2 Entry">;
-	Type1Entries EntryType1Data(Type1EntrySize)[ NumType1Entries ];
-	Type2Entries EntryType2Data[ NumType2Entries ];
+    FBNHeader Header;
+    //u32 Magic;
+    //u16 VersionMajor <name = "Version Major Number">;
+    //u16 VersionMinor<name = "Version Minor Number">;
+    TypeList EntryTypeList;
+    //u32 NumType1Entries <name = "Number of Type 1 Entries">;
+    //u32 Type1EntrySize <name = "Size of Type 1 Entry">;
+    //u32 NumType2Entries <name = "Number of Type 2 Entries">;
+    //u32 Type2EntrySize <name = "Size of Type 2 Entry">;
+    if (EntryTypeList.Type1.Number > 0)
+        Type1Entries EntryType1Data(EntryTypeList.Type1.EntrySize)[ EntryTypeList.Type1.Number ];
+    if (EntryTypeList.Type2.Number > 0)
+        Type2Entries EntryType2Data[ EntryTypeList.Type2.Number ];
 };
 
 FBNFile FBN;
