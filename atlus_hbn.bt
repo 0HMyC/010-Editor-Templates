@@ -109,6 +109,37 @@ typedef struct
 typedef struct
 {
     u8 EntryNum <name = "Entry Number">;
+    u8 Field01 <format=hex>;
+    u16 Field02;
+    s16 Field04 <format=hex>;
+    u16 Field06 <format=hex>;    
+    float Field08 <comment = "X Start?">;
+    float Field0C <comment = "Z Start?">;
+    float Field10 <comment = "Y Start?">;
+    float Field14 <comment = "X End?">;
+    float Field18 <comment = "Z End?">;
+    float Field1C <comment = "Y End?">;
+    if (Field01 != 0x54)
+    {
+        Printf("0x%X - HBNEntryType6 Field01: %d\n", FTell(), Field01);
+    }
+    if (Field02 != 7)
+    {
+        Printf("0x%X - HBNEntryType6 Field02: %d\n", FTell(), Field02);
+    }
+    if (Field04 != -256)
+    {
+        Printf("0x%X - HBNEntryType6 Field04: %d\n", FTell(), Field04);
+    }
+    if (Field06 != 0xA800)
+    {
+        Printf("0x%X - HBNEntryType6 Field06: %d\n", FTell(), Field06);
+    }
+} HBNEntryType6 <name = "Type 6 Entries">;
+
+typedef struct
+{
+    u8 EntryNum <name = "Entry Number">;
     u8 Field01;
     u16 Field02;
     float Field04 <comment = "X Pos?">;
@@ -178,7 +209,7 @@ typedef struct HBNFile
     if (EntryTypeList.Type5.Number > 0)
         HBNEntryType5 Entry5Data[ EntryTypeList.Type5.Number ];
     if (EntryTypeList.Type6.Number > 0)
-        u8 Entry6Data[ EntryTypeList.Type6.Number * EntryTypeList.Type6.EntrySize ];
+        HBNEntryType6 Entry6Data[ EntryTypeList.Type6.Number ];
     if (EntryTypeList.Type7.Number > 0)
         HBNEntryType7 Entry7Data[ EntryTypeList.Type7.Number ];
     if (EntryTypeList.Type8.Number > 0)
