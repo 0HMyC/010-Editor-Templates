@@ -14,15 +14,16 @@
 typedef ubyte u8;
 typedef ushort u16;
 typedef uint u32;
+typedef int s32;
 
 enum<u16> times
 {
-    EarlyMorning = 0,
-    Morning = 1,
-    Lunchtime = 2,
-    Afternoon = 3,
-    AfterSchool = 4,
-    Evening = 5,
+    EarlyMorning = 1,
+    Morning = 2,
+    Lunchtime = 3,
+    Afternoon = 4,
+    AfterSchool = 5,
+    Evening = 6,
 };
 
 typedef struct calendarGroup
@@ -32,57 +33,58 @@ typedef struct calendarGroup
     times OnTime <bgcolor=0xFF5555>;
     u16 Field06 <format=hex, bgcolor=0x00FFFF>;
     u32 Field08 <format=hex, bgcolor=0x00FFFF, comment = "Constant 0xFFFFFFFF?">;
-    u32 GroupID <comment = "NPC Group to load from ??? FBN maybe?", bgcolor=0x00FF00>;
+    u32 GroupID <comment = "NPC Group to load", bgcolor=0x00FF00>;
     u32 Field10 <format=hex, bgcolor=0x00FFFF>;
     u32 Field14 <format=hex, bgcolor=0x00FFFF>;
     u32 Field18 <format=hex, bgcolor=0x00FFFF>;
     u32 Field1C <format=hex, bgcolor=0x00FFFF>;
 };
 
-typedef struct unknownGroup
+typedef struct npcGroupSep
 {
-    u16 Field00 <bgcolor=0x00FFFF, comment = "Model ID?">;
-    u16 Field02 <bgcolor=0x00FFFF, comment = "Character ID?">;
-    u16 Field04 <bgcolor=0x00FFFF>;
-    u16 Field06 <bgcolor=0x00FFFF>;
-    u16 Field08 <bgcolor=0x00FFFF>;
-    u16 Field0A <bgcolor=0x00FFFF>;
-    u16 Field0C <bgcolor=0x00FFFF>;
-    u16 Field0E <bgcolor=0x00FFFF>;
-    u32 Field10 <format=hex, bgcolor=0x00FFFF>;
-    u16 Field14 <bgcolor=0x00FFFF>;
-    u16 Field16 <bgcolor=0x00FFFF>;
-    u16 Field18 <bgcolor=0x00FFFF>;
-    u16 Field1A <bgcolor=0x00FFFF>;
-    u16 Field1C <bgcolor=0x00FFFF>;
-    u16 Field1E <bgcolor=0x00FFFF>;
-    u16 Field20 <bgcolor=0x00FFFF>;
-    u16 Field22 <bgcolor=0x00FFFF>;
+    u32 Field00;
+    u32 Padding[7] <format = hex, comment = "Uncertain">;
 };
 
-typedef struct unknownGroup2
+typedef struct defNPC
 {
-    u16 Field00;
-    u16 Field02;
-    u16 Field04;
-    u16 Field06;
-    u32 Field08;
-    u32 Field0C;
+    u16 NPCID <bgcolor = 0xFFFF00>;
+    u16 Field02 <bgcolor = 0x00FFFF>;
+    u16 ModelID <comment = "N%05d.RMD", bgcolor = 0x7F55FF>;
+    u16 Field06 <bgcolor = 0x00FFFF, comment = "Possibly animation ID to use?">;
+    s32 Field08 <format=hex, comment = "Constant value 0xFFFFFFFF?", bgcolor = 0x0000FF>;
+    s32 Field0C <bgcolor = 0x0000FF>;
+    u16 Field10 <format=hex, bgcolor = 0x0000FF>;
+    u16 Field12 <format=hex, bgcolor = 0x0000FF>;
+    u32 Field14 <bgcolor = 0x0000FF>;
+    u32 Field18 <bgcolor = 0x0000FF>;
+    u32 Field1C <bgcolor = 0x0000FF>;
 };
 
-typedef struct unknownDefNPC
+u8 foundNPCGroupEnd(int64 fPos)
 {
-    u16 Field00;
-    u16 Field02;
-    u16 ModelID <comment = "N%05d.RMD">;
-    u16 Field06;
-    u32 Field08 <format=hex, comment = "Constant value 0xFFFFFFFF?">;
-    u32 Field0C <comment = "Script index or smth?">;
-    u16 Field10;
-    u16 Field12;
-    u32 Field14;
-    u32 Field18;
-    u32 Field1C;
+    if (ReadUInt() == 65535 && ReadUInt(fPos + 4) == 0 && ReadUInt(fPos + 8) == 0 && ReadUInt(fPos + 12) == 0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+typedef struct npcGroup
+{
+    while (foundNPCGroupEnd(FTell()) == 0)
+    {
+        defNPC NPCDef;
+    }
+    npcGroupSep GroupSep <name = "NPC Group Seperator", bgcolor=0x0000FF>;
+};
+
+typedef struct npcGroupArr
+{
+    while ((FTell() / 64) < (FileSize() / 64))
+    {
+        npcGroup GroupNPC;
+    }
 };
 
 typedef struct calendarArr(u32 size)
@@ -97,14 +99,13 @@ typedef struct calendarArr(u32 size)
 typedef struct npcTblBIN
 {
     u32 TotalGroups <bgcolor=0xFF0000>;
-    u32 UnknownFF[7] <format=hex, bgcolor=0x00FFFF>;
-    calendarArr LoadDates(TotalGroups) <name = "Calendar NPC Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
-    Printf("There is unknown data from offset 0x%X!", FTell());
-    u32 unknown[16];
-    unknownDefNPC UnkDef[10];
-    //unknownGroup2 UnknownGroups[100];
-    //unknownGroup UnknownGroups[100];
-    //u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+    u32 Unknown[7] <format=hex, bgcolor=0x00FFFF, comment = "Possibly padding?">;
+    calendarArr LoadDates(TotalGroups) <name = "Calendar Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
+    //Printf("There is unknown data from offset 0x%X!", FTell());
+    npcGroupArr AllNPC <name = "NPC Groups", comment = "List of NPC groups refrenced by Calendar Groups">;
+    // account for potentially awkward files
+    if (FTell() < FileSize())
+        u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Unknown Bytes", bgcolor=0x0000FF>;
 };
 
 npcTblBIN FILE <name = "NPC Table BIN">;
