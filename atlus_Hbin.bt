@@ -1,11 +1,11 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//      File: AtlusFieldHitPack_P3.bt
+//      File: AtlusHitBin.bt
 //   Authors: moddaman
 //   Version: 1.0
-//   Purpose: Parse 3D Field Hit Object Pack h*_*.bin files.
-//  Category: Persona 3
+//   Purpose: Parse 3D Field Hit Object h*_*.bin files.
+//  Category: Atlus
 // File Mask: 
 //  ID Bytes: 
 //   History: 
