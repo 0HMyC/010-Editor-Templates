@@ -1,11 +1,11 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//      File: AtlusFieldNPCTable_P3F.bt
+//      File: AtlusNPCBin.bt
 //   Authors: moddaman
 //   Version: 1.0
 //   Purpose: Parse Field NPC *.bin files.
-//  Category: Persona 3 FES
+//  Category: Atlus
 // File Mask: 
 //  ID Bytes: 
 //   History: 
@@ -96,7 +96,6 @@ typedef struct calendarArr(u32 size)
 
 typedef struct npcTblBIN
 {
-    //u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00FF00>;
     u32 TotalGroups <bgcolor=0xFF0000>;
     u32 UnknownFF[7] <format=hex, bgcolor=0x00FFFF>;
     calendarArr LoadDates(TotalGroups) <name = "Calendar NPC Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
