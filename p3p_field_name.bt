@@ -1,10 +1,10 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//      File: AtlusFieldName_P3P.bt
+//      File: AtlusFieldHitNames_P3P.bt
 //   Authors: moddaman
 //   Version: 1.0
-//   Purpose: Parse Field *_name.dat files.
+//   Purpose: Parse Field Hit Object *_name.dat files.
 //  Category: Persona 3 Portable
 // File Mask: 
 //  ID Bytes: 
