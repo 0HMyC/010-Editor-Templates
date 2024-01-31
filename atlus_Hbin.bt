@@ -35,7 +35,6 @@ typedef struct hitObject
     u8 Field01 <comment = "Controls trigger type?", bgcolor=0xFFFF00>;
     u16 Field02 <bgcolor=0x00FFFF>;
     Printf("hitObject 0x%X - Field00: %d, Field01: %d, Field02: %d\n", FTell() - 4, Field00, Field01, Field02);
-    //Printf("0x%X hitObject Field02: %d\n", FTell(), Field02);
     s16 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor=0xFF00FF>;
     u16 LoadFieldMajor <comment = "Unconfirmed, must test in-game", bgcolor=0x777777>;
     u16 LoadFieldMinor <comment = "Unconfirmed, must test in-game", bgcolor=0x000000>;
@@ -57,10 +56,10 @@ typedef struct hitTBL
 {
     while (FTell() < FileSize())
     {
-        // account for the possibility of padded files with weirdness at end
+        // account for padded files; files are aligned to X bytes, possibly 0x10?
         if (FileSize() - FTell() < 32)
         {
-            u32 Padding[(FileSize() - FTell()) / 4] <comment = "Assumed to be padding", bgcolor=0x0000FF>;
+            u32 Padding[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF>;
             break;
         }
         hitObject HitObject <name = "Hit Object">;
