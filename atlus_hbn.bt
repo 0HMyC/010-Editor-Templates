@@ -10,12 +10,7 @@
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
-
-typedef ubyte u8;
-typedef short s16;
-typedef ushort u16;
-typedef uint u32;
-typedef float f32;
+#include "types.h"
 
 typedef struct
 {
@@ -37,21 +32,13 @@ typedef struct
         f32 XLength <name = "X - Length", bgcolor=0x6677EE>;
     } DefArea <name = "Define Area">;
     if (Unknown1 != 0x34)
-    {
         Printf("0x%X - HBNEntryType1 Unknown1: %d\n", FTell(), Unknown1);
-    }
     if (Unknown2 != 0)
-    {
         Printf("0x%X - HBNEntryType1 Unknown2: %d\n", FTell(), Unknown2);
-    }
     if (Unknown3 != 0xFF)
-    {
         Printf("0x%X - HBNEntryType1 Unknown3: %d\n", FTell(), Unknown3);
-    }
     if (Unknown4 != 0xA800)
-    {
         Printf("0x%X - HBNEntryType1 Unknown4: %d\n", FTell(), Unknown4);
-    }
 } HBNEntryType1 <name = "Trigger Area Entries", comment = "Defines triggerable area">;
 
 typedef struct
@@ -64,13 +51,9 @@ typedef struct
     f32 YPos <name = "Y Pos", bgcolor=0x00FF00>;
     f32 Rot <name = "Rotation", bgcolor=0xFFFF00>;
     if (Unknown1 != 56)
-    {
         Printf("0x%X - HBNEntryType2 Unknown1: %d\n", FTell(), Unknown1);
-    }
     if (Unknown2 != 0)
-    {
         Printf("0x%X - HBNEntryType2 Unknown2: %d\n", FTell(), Unknown2);
-    }
 } HBNEntryType2 <name = "Type 2 Entries">;
 
 typedef struct
@@ -120,21 +103,13 @@ typedef struct
     f32 Field18 <comment = "Z End?">;
     f32 Field1C <comment = "Y End?">;
     if (Field01 != 0x54)
-    {
         Printf("0x%X - HBNEntryType6 Field01: %d\n", FTell(), Field01);
-    }
     if (Field02 != 7)
-    {
         Printf("0x%X - HBNEntryType6 Field02: %d\n", FTell(), Field02);
-    }
     if (Field04 != -256)
-    {
         Printf("0x%X - HBNEntryType6 Field04: %d\n", FTell(), Field04);
-    }
     if (Field06 != 0xA800)
-    {
         Printf("0x%X - HBNEntryType6 Field06: %d\n", FTell(), Field06);
-    }
 } HBNEntryType6 <name = "Type 6 Entries">;
 
 typedef struct
@@ -146,6 +121,12 @@ typedef struct
     f32 Field08 <comment = "Z Pos?">;
     f32 Field0C <comment = "Y Pos?">;
     f32 Field10 <comment = "Possibly u32? Rotation?">;
+    Printf("HBNEntryType7 0x%X - Field01: %d\n", FTell() - 19, Field01);
+    Printf("HBNEntryType7 0x%X - Field02: %d\n", FTell() - 18, Field02);
+    Printf("HBNEntryType7 0x%X - Field04: %d\n", FTell() - 16, Field04);
+    Printf("HBNEntryType7 0x%X - Field08: %d\n", FTell() - 12, Field08);
+    Printf("HBNEntryType7 0x%X - Field0C: %d\n", FTell() - 8, Field0C);
+    Printf("HBNEntryType7 0x%X - Field10: %d\n", FTell() - 4, Field10);
 } HBNEntryType7 <name = "Type 7 Entries">;
 
 typedef struct TypeListMetadata
@@ -195,7 +176,7 @@ u8 checkForSegF102(int64 fPos)
 typedef struct HBNFile
 {
     HBNHeader Header;
-    Printf("Reading version %d.%d HBN!\n", Header.Version.Major, Header.Version.Minor);
+    Printf("Reading version %d.%d HBN!\n", Header.Version.Minor, Header.Version.Major);
     TypeList EntryTypeList;
     // this is awful on the eyes but it stops 010 from throwing warnings
     if (EntryTypeList.Type1.Number > 0)

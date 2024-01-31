@@ -21,11 +21,10 @@ typedef enum<u16>
 
 typedef struct(u32 Type1EntrySize)
 {
-    u8 UnknownBytes[4] <bgcolor = 0x00FFFF>;
-    if (UnknownBytes[2] != 0x72)
-        Printf("Type1Entries 0x%X - UnknownBytes[2]: %d\n", FTell() - 2, UnknownBytes[2]);
-    if (UnknownBytes[3] != 1)
-        Printf("Type1Entries 0x%X - UnknownBytes[3]: %d\n", FTell() - 1, UnknownBytes[3]);
+    u8 UnknownBytes[2] <bgcolor = 0x00FFFF>;
+    u16 Field02 <format = hex, comment = "Segment end/start?", bgcolor = 0x00FFFF>;
+    if (Field02 != 0x172)
+        Printf("Type1Entries 0x%X - Field02: %d\n", FTell() - 2, Field02);
     MajorType Major <name = "Major">;
     s16 Minor <name = "Minor">;
     u8 Res_ID <name = "Res ID">;
