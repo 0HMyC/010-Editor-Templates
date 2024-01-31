@@ -11,11 +11,7 @@
 //   History: 
 //------------------------------------------------
 
-typedef ubyte u8;
-typedef ushort u16;
-typedef short s16;
-typedef uint u32;
-typedef int s32;
+#include "types.h"
 
 enum<u8> TriggerTypes
 {
@@ -29,22 +25,34 @@ enum<u8> TriggerTypes
 
 typedef struct hitObject
 {
+    Printf("hitObject START\n");
     s32 EnableOnFlag <comment = "If set flag is disabled, object is disabled", bgcolor=0x00FF00>;
     u32 UnknownFF[2] <format=hex, comment = "Always 0xFFFFFFFF?", bgcolor=0x0000FF>;
+    if (UnknownFF[0] != 0xFFFFFFFF)
+        Printf("0x%X - UnknownFF[0]: %d\n", FTell() - 8, UnknownFF[0]);
+    if (UnknownFF[1] != 0xFFFFFFFF)
+        Printf("0x%X - UnknownFF[1]: %d\n", FTell() - 8, UnknownFF[1]);
     u8 Field00 <bgcolor=0xDDDD00>;
     u8 Field01 <comment = "Controls trigger type?", bgcolor=0xFFFF00>;
-    Printf("0x%X hitObject Field00: %d, hitObject Field01: %d\n", FTell(), Field00, Field01);
     u16 Field02 <bgcolor=0x00FFFF>;
+    Printf("0x%X - Field00: %d, Field01: %d, Field02: %d\n", FTell() - 4, Field00, Field01, Field02);
     //Printf("0x%X hitObject Field02: %d\n", FTell(), Field02);
     s16 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor=0xFF00FF>;
-    u16 Field06 <bgcolor=0x00FFFF>;
-    u32 Field08 <bgcolor=0x00FFFF>;
+    u16 LoadFieldMajor <comment = "Unconfirmed, must test in-game", bgcolor=0x777777>;
+    u16 LoadFieldMinor <comment = "Unconfirmed, must test in-game", bgcolor=0x000000>;
+    u16 Field0A <bgcolor=0x00FFFF>;
+    Printf("0x%X - LoadFieldMajor: %d, LoadFieldMinor: %d, Field0A: %d\n", FTell() - 6, LoadFieldMajor, LoadFieldMinor, Field0A);
     u16 Field0C <bgcolor=0x00FFFF>;
     u16 Field0E <comment = "Bool flag of some sort?", bgcolor=0xFF0000>;
+    Printf("0x%X - Field0C: %d, Field0E: %d\n", FTell() - 4, Field0C, Field0E);
     u32 Field10 <format=hex, comment = "Always 0xFFFFFFFF?", bgcolor=0x00FFFF>;
+    if (Field10 != 0xFFFFFFFF)
+        Printf("0x%X - Field10: %d\n", FTell() - 4, Field10);
     u32 Field14 <comment = "If Field01 is set to 7, this must equal 3?", bgcolor=0xFF0000>;
     u32 HideOnFlag <comment = "Hides object if flag is enabled", bgcolor=0x0088FF>;
     u32 Field1C <bgcolor=0x00FFFF>;
+    Printf("0x%X - Field1C: %d\n", FTell() - 4, Field1C);
+    Printf("hitObject END\n");
 };
 
 typedef struct hitTBL
