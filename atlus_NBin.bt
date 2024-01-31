@@ -13,6 +13,22 @@
 
 #include "types.h"
 
+enum<u16> months
+{
+    January = 1,
+    February = 2,
+    March = 3,
+    April = 4,
+    May = 5,
+    June = 6,
+    July = 7,
+    August = 8,
+    September = 9,
+    October = 10,
+    November = 11,
+    December = 12,
+};
+
 enum<u16> times
 {
     EarlyMorning = 1,
@@ -25,7 +41,7 @@ enum<u16> times
 
 typedef struct calendarGroup
 {
-    u16 OnMonth <bgcolor=0xFF77FF>;
+    months OnMonth <bgcolor=0xFF77FF>;
     u16 OnDay <bgcolor=0xDD55DD>;
     times OnTime <bgcolor=0xFF5555>;
     u16 Field06 <format=hex, bgcolor=0x00FFFF>;
@@ -65,7 +81,7 @@ typedef struct defNPC
     u16 NPCID <bgcolor = 0xFFFF00, comment = "Pulls from FBN most likely">;
     u16 Field02 <bgcolor = 0x00FFFF>;
     u16 ModelID <comment = "N%05d.RMD", bgcolor = 0x7F55FF>;
-    u16 Field06 <bgcolor = 0x00FFFF, comment = "Possibly animation ID to use?">;
+    u16 AnimationID <bgcolor = 0x00FFFF, comment = "Unconfirmed, test in-game">;
     s32 MessageIndex <comment = "Index of message to call from BMD">;
     s32 ProcedureIndex <comment = "Index of procedure to call from BF">;
     s32 HideOnBitflag <comment = "Unconfirmed, test in-game">;
