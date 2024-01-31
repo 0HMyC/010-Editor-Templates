@@ -11,10 +11,7 @@
 //   History: 
 //------------------------------------------------
 
-typedef ubyte u8;
-typedef ushort u16;
-typedef uint u32;
-typedef int s32;
+#include "types.h"
 
 enum<u16> times
 {
@@ -28,6 +25,7 @@ enum<u16> times
 
 typedef struct calendarGroup
 {
+    Printf("calendarGroup START\n");
     u16 OnMonth <bgcolor=0xFF77FF>;
     u16 OnDay <bgcolor=0xDD55DD>;
     times OnTime <bgcolor=0xFF5555>;
@@ -40,81 +38,56 @@ typedef struct calendarGroup
     u32 Field1C <format=hex, bgcolor=0x00FFFF>;
     // Check if any seemingly "constant" fields ever contain data
     if (Field06 != 0)
-    {
-        Printf("0x%X - calendarGroup Field06: %d\n", FTell(), Field06);
-    }
+        Printf("0x%X - Field06: %d\n", FTell() - 26, Field06);
     if (Field08 != -1)
-    {
-        Printf("0x%X - calendarGroup Field08: %d\n", FTell(), Field08);
-    }
+        Printf("0x%X - Field08: %d\n", FTell() - 24, Field08);
     if (Field10 != 0)
-    {
-        Printf("0x%X - calendarGroup Field10: %d\n", FTell(), Field10);
-    }
+        Printf("0x%X - Field10: %d\n", FTell() - 16, Field10);
     if (Field14 != 0)
-    {
-        Printf("0x%X - calendarGroup Field14: %d\n", FTell(), Field14);
-    }
+        Printf("0x%X - Field14: %d\n", FTell() - 12, Field14);
     if (Field18 != 0)
-    {
-        Printf("0x%X - calendarGroup Field18: %d\n", FTell(), Field18);
-    }
+        Printf("0x%X - Field18: %d\n", FTell() - 8, Field18);
     if (Field1C != 0)
-    {
-        Printf("0x%X - calendarGroup Field1C: %d\n", FTell(), Field1C);
-    }
+        Printf("0x%X - Field1C: %d\n", FTell() - 4, Field1C);
+    Printf("calendarGroup END\n");
 };
 
 typedef struct npcGroupSep
 {
+    Printf("npcGroupSep START\n");
     u32 Field00;
+    if (Field00 != 0xFFFF)
+        Printf("0x%X - Field00: %d\n", FTell() - 4, Field00);
     u32 Padding[7] <format = hex, comment = "Uncertain">;
     if (Padding[3] != 0xFFFFFFFF)
-    {
-        Printf("0x%X - npcGroupSep Padding[3]: %d\n", FTell(), Padding[3]);
-    }
+        Printf("0x%X - Padding[3]: %d\n", FTell() - 16, Padding[3]);
+    Printf("npcGroupSep END\n");
 };
 
 typedef struct defNPC
 {
+    Printf("defNPC START\n");
     u16 NPCID <bgcolor = 0xFFFF00, comment = "Pulls from FBN most likely">;
     u16 Field02 <bgcolor = 0x00FFFF>;
     u16 ModelID <comment = "N%05d.RMD", bgcolor = 0x7F55FF>;
     u16 Field06 <bgcolor = 0x00FFFF, comment = "Possibly animation ID to use?">;
-    s32 Field08 <bgcolor = 0x00FFFF>;
-    s32 Field0C <bgcolor = 0x00FFFF>;
+    s32 MessageIndex <comment = "Index of message to call from BMD">;
+    s32 ProcedureIndex <comment = "Index of procedure to call from BF">;
     s32 Field10 <bgcolor = 0x00FFFF, comment = "Hides on bitflag?">;
     u32 Field14 <bgcolor = 0x0000FF>;
     u32 Field18 <bgcolor = 0x0000FF>;
     u32 Field1C <bgcolor = 0x0000FF>;
     if (Field02 != 5)
-    {
-        Printf("0x%X - defNPC Field02: %d\n", FTell(), Field02);
-    }
-    /*if (Field08 != 0xFFFFFFFF)
-    {
-        Printf("0x%X - defNPC Field08: %d\n", FTell(), Field08);
-    }
-    if (Field0C != 0xFFFFFFFF)
-    {
-        Printf("0x%X - defNPC Field0C: %d\n", FTell(), Field0C);
-    }
+        Printf("0x%X - Field02: %d\n", FTell() - 30, Field02);
     if (Field10 != 0xFFFFFFFF)
-    {
-        Printf("0x%X - defNPC Field10: %d\n", FTell(), Field10);
-    }*/
+        Printf("0x%X - Field10: %d\n", FTell() - 16, Field10);
     if (Field14 != 0)
-    {
-        Printf("0x%X - defNPC Field14: %d\n", FTell(), Field14);
-    }
+        Printf("0x%X - Field14: %d\n", FTell() - 12, Field14);
     if (Field18 != 0)
-    {
-        Printf("0x%X - defNPC Field18: %d\n", FTell(), Field18);
-    }
+        Printf("0x%X - Field18: %d\n", FTell() - 8, Field18);
     if (Field1C != 0)
-    {
-        Printf("0x%X - defNPC Field1C: %d\n", FTell(), Field1C);
-    }
+        Printf("0x%X - Field1C: %d\n", FTell() - 4, Field1C);
+    Printf("defNPC END\n");
 };
 
 u8 foundNPCGroupEnd(int64 fPos)
