@@ -31,13 +31,13 @@ typedef struct hitObject
         Printf("hitObject 0x%X - UnknownFF[0]: %d\n", FTell() - 8, UnknownFF[0]);
     if (UnknownFF[1] != 0xFFFFFFFF)
         Printf("hitObject 0x%X - UnknownFF[1]: %d\n", FTell() - 8, UnknownFF[1]);
-    u8 Field00 <bgcolor=0xDDDD00>;
+    u8 Field00 <comment = "Bool toggle to force enable/disable trigger?", bgcolor=0xDDDD00>;
     u8 Field01 <comment = "Controls trigger type?", bgcolor=0xFFFF00>;
     u16 Field02 <bgcolor=0x00FFFF>;
     Printf("hitObject 0x%X - Field00: %d, Field01: %d, Field02: %d\n", FTell() - 4, Field00, Field01, Field02);
     s16 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor=0xFF00FF>;
-    u16 LoadFieldMajor <comment = "Unconfirmed, must test in-game", bgcolor=0x777777>;
-    u16 LoadFieldMinor <comment = "Unconfirmed, must test in-game", bgcolor=0x000000>;
+    u16 LoadFieldMajor <comment = "FXXX_000", bgcolor=0x777777>;
+    u16 LoadFieldMinor <comment = "F000_XXX", bgcolor=0x000000>;
     u16 Field0A <bgcolor=0x00FFFF>;
     Printf("hitObject 0x%X - LoadFieldMajor: %d, LoadFieldMinor: %d, Field0A: %d\n", FTell() - 6, LoadFieldMajor, LoadFieldMinor, Field0A);
     u16 Field0C <bgcolor=0x00FFFF>;
@@ -49,7 +49,7 @@ typedef struct hitObject
     u32 Field14 <comment = "If Field01 is set to 7, this must equal 3?", bgcolor=0xFF0000>;
     u32 HideOnFlag <comment = "Hides object if flag is enabled", bgcolor=0x0088FF>;
     u32 Field1C <bgcolor=0x00FFFF>;
-    Printf("hitObject 0x%X - Field1C: %d\n", FTell() - 4, Field1C);
+    Printf("hitObject 0x%X - Field1C: %d\n\n", FTell() - 4, Field1C);
 };
 
 typedef struct hitTBL
