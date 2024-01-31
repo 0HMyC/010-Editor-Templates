@@ -81,10 +81,10 @@ typedef struct defNPC
     u16 NPCID <bgcolor = 0xFFFF00, comment = "Pulls from FBN most likely">;
     u16 Field02 <bgcolor = 0x00FFFF>;
     u16 ModelID <comment = "N%05d.RMD", bgcolor = 0x7F55FF>;
-    u16 AnimationID <bgcolor = 0x00FFFF, comment = "Unconfirmed, test in-game">;
+    u16 AnimationID <comment = "Plays this animation from RMD">;
     s32 MessageIndex <comment = "Index of message to call from BMD">;
     s32 ProcedureIndex <comment = "Index of procedure to call from BF">;
-    s32 HideOnBitflag <comment = "Unconfirmed, test in-game">;
+    s32 HideOnBitflag <comment = "Hides object if flag is enabled">;
     u32 Field14 <bgcolor = 0x0000FF>;
     u32 Field18 <bgcolor = 0x0000FF>;
     u32 Field1C <bgcolor = 0x0000FF>;
