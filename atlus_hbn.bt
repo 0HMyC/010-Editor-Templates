@@ -1,11 +1,11 @@
 //------------------------------------------------
 //--- 010 Editor v11.0.1 Binary Template
 //
-//   File: Atlus3DFieldHBN_P3.bt
+//   File: Atlus3DFieldHBN.bt
 //   Authors: Tupelov, moddaman
 //   Version: 1.0
 //   Purpose: Parse 3D Field *.HBN files.
-//  Category: Persona 3
+//  Category: Atlus
 // File Mask: *.HBN
 //  ID Bytes: 
 //   History: 
