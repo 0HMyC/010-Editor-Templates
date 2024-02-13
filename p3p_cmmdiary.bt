@@ -1,0 +1,38 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: P3PCommunityDiaryDAT.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse the cmmDiary.dat file in P3P
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+typedef struct diaryHeader
+{
+    u32 Field00;
+    u32 Field04;
+};
+
+typedef struct commuEntry
+{
+    char Description[27];
+};
+
+typedef struct diaryFile
+{
+    diaryHeader Header <bgcolor = 0x00FFFF>;
+    while (FileSize() > FTell() + 27)
+    {
+        commuEntry Entry;
+    }
+    u32 DupeBytes[6] <bgcolor = 0x0000FF>;
+};
+
+diaryFile FILE;

@@ -1,0 +1,72 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: P3PCommunityEventNumberDAT.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse the cmmEventNo.dat file in P3P
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+enum<u16> commu
+{
+    NULL = 0,
+    SEES = 1,
+    Kenji = 2,
+    Hidetoshi = 3,
+    OldCouple = 4,
+    Yukari = 5,
+    Fuuka = 6,
+    Mitsuru = 7,
+    Aigis = 8,
+    Yuko = 9,
+    Chihiro = 10,
+    TrackTeam = 11,
+    KendoTeam = 12,
+    SwimTeam = 13,
+    Maya = 14,
+    PhotoClub = 15,
+    ArtClub = 16,
+    MusicClub = 17,
+    Maiko = 18,
+    Pharos = 19,
+    Bebe = 20,
+    Tanaka = 21,
+    Mutatsu = 22,
+    Mamoru = 23,
+    Nozomi = 24,
+    Akinari = 25,
+    NyxTeam = 26,
+};
+
+typedef struct hed
+{
+    u32 Field00 <bgcolor = 0x00FFFF>;
+    u32 EntryCount <bgcolor = 0x00FF00>;
+};
+
+typedef struct eventEntry
+{
+    commu SocialLinkID;
+    u8 Field02;
+    u8 Field03;
+    u16 EventMinorID <bgcolor = 0xAAAAFF>;
+    u16 EventMajorID <bgcolor = 0x5555FF>;
+    u32 Field08;
+    u32 Field0C;
+};
+
+typedef struct eventNoFile
+{
+    hed Header;
+    eventEntry Entry[Header.EntryCount];
+    u32 DupeBytes[6] <comment = "Duplicated from start of file, ignore", bgcolor = 0x0000FF>;
+};
+
+eventNoFile FILE;

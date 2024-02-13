@@ -1,0 +1,163 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: DatFieldDailyHitName.uasset
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse DT_FldDailyHitName.uasset
+//  Category: Persona 3 Reload
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+
+LittleEndian();
+
+enum<u32> unkDef
+{
+    UNK_00000004 = 4,
+    CHK_SYSFLAG_BYNAME = 20,
+    CHK_EVTFLAG_BYNAME = 21,
+    CHK_FLDFLAG_BYNAME = 23,
+    CHK_SYSFLAG_BYNAME2 = 24,
+    CHK_FLDFLAG_BYNAME2 = 25,
+    CHK_FLDFLAG_BYNAME3 = 26,
+    CHK_FLDFLAG_BYNAME4 = 27,
+    CHK_CMMFLAG_BYNAME = 33,
+    UNK_000000DF = 223,
+};
+
+enum<u32> unkDef2
+{
+    UNK2_00000008 = 8,
+    UNK2_000000E1 = 225,
+};
+
+typedef struct ueProperties
+{
+    u32 Unknown[3];
+};
+
+typedef struct ueData
+{
+    u32 Unknown[1328] <bgcolor = 0x00FFFF>;
+    u32 RemainderChunkSize <bgcolor = 0xFFFF00, comment = "number of bytes starting from 0x151C in file">;
+    u32 Unknown2[28] <bgcolor = 0x00FFFF>;
+    u8 Unknown3 <bgcolor = 0x00FFFF>;
+    ueProperties Properties <bgcolor = 0x00FFFF>;
+    //u32 TotalEntries <bgcolor = 0xFF0000>;
+    //u32 Unknown4[3] <bgcolor = 0x00FFFF>;
+    //u8 Unknown5 <bgcolor = 0x00FFFF>;
+    //u16 Unknown3 <bgcolor = 0x00FFFF>;
+};
+
+typedef struct nameEntry
+{
+    u32 ChunkLen;
+    u32 Unknown;
+    u8 Unknown2;
+    u32 StrLen <bgcolor = 0x00FF00>;
+    // TODO: properly account for weird strings instead of hardcoding
+    if (StrLen == 4294967283)
+    {
+        Printf("0x%X - StrLen: 0x%X\n", FTell(), StrLen);
+        char NameString[26];
+    }
+    else if (StrLen == 4294967291)
+    {
+        Printf("0x%X - StrLen: 0x%X\n", FTell(), StrLen);
+        char NameString[10];
+    }
+    else if (StrLen == 4294967287)
+    {
+        Printf("0x%X - StrLen: 0x%X\n", FTell(), StrLen);
+        char NameString[18];
+    }
+    else
+    {
+        char Name[this.StrLen] <bgcolor = 0xAA66FF>;
+    }
+};
+
+typedef struct nameFooter
+{
+    unkDef2 Identifier <comment = "Always 8?">;
+    u32 Unknown[3] <bgcolor = 0x00FFFF>;
+    //u32 FlagChunkLen <comment = "Total length of \"flag chunk\" in bytes">;
+    //u8 Unknown2 <bgcolor = 0x00FFFF>;
+    //u32 Unknown3 <bgcolor = 0x00FFFF>;
+    nameEntry Flag;
+    //u32 FlagNameLen;
+    //char Flag[FlagNameLen];
+    u32 Unknown4[4] <bgcolor = 0x00FFFF>;
+    //u32 Name2ChunkLen;
+    //u32 Unknown5 <bgcolor = 0x00FFFF>;
+    //u8 Unknown6 <bgcolor = 0x00FFFF>;
+    nameEntry Name2;
+    //u32 Unknown7[2] <bgcolor = 0x00FFFF>;
+    //if (FileSize() > FTell() + 24)
+    //    u32 Unknown8[6] <bgcolor = 0x00FFFF>;
+    //u8 Unknown8 <bgcolor = 0x00FFFF>;
+    /*unkDef ContainerID <comment = "not quite sure what this does fully">;
+    if (Identifier == UNK2_000000E1)
+    {
+        u32 Unknown2[5] <bgcolor = 0x00FFFF>;
+        u8 Unknown3 <bgcolor = 0x00FFFF>;
+    }
+    else
+    {
+        //if (ContainerID == CHK_EVTFLAG_BYNAME || ContainerID == CHK_CMMFLAG_BYNAME || ContainerID == CHK_FLDFLAG_BYNAME || ContainerID == CHK_FLDFLAG_BYNAME2 || ContainerID == CHK_FLDFLAG_BYNAME3 || ContainerID == CHK_FLDFLAG_BYNAME4 || ContainerID == CHK_SYSFLAG_BYNAME || ContainerID == CHK_SYSFLAG_BYNAME2)
+        if (ContainerID >= CHK_SYSFLAG_BYNAME && ContainerID <= CHK_CMMFLAG_BYNAME)
+        {
+            Printf("0x%X - ContainerID: %d\n", FTell() - 4, ContainerID);
+            u32 Unknown3 <bgcolor = 0x00FFFF>;
+            u8 Unknown4 <bgcolor = 0x00FFFF>;
+            nameEntry FlagName <bgcolor = 0xFF66AA>;
+            u32 Unknown5[6] <bgcolor = 0x00FFFF>;
+            u8 Unknown6 <bgcolor = 0x00FFFF>;
+        }
+        else
+        {
+            // assume supported type if not tripped by anything
+            // TODO: not this
+            if (FileSize() < FTell() + 79)
+            {
+                u32 Unknown2[11] <bgcolor = 0x00FFFF>;
+                u16 Unknown3 <bgcolor = 0x00FFFF>;
+            }
+            else
+            {
+                u32 Unknown2[12] <bgcolor = 0x00FFFF>;
+                u16 Unknown3 <bgcolor = 0x00FFFF>;
+                u32 NameIndex <comment = "Index value of name refrenced by game">;
+                u32 Unknown4[6] <bgcolor = 0x00FFFF>;
+                u8 Unknown5 <bgcolor = 0x00FFFF>;
+            }
+        }
+    }*/
+};
+
+typedef struct kinData
+{
+    u32 Unknown[8] <bgcolor = 0x00FFFF>;
+    nameEntry Entry;
+    nameFooter Footer;
+};
+
+typedef struct fileData
+{
+    ueData UnrealAssetData;
+    local u32 i;
+    //Printf("UnrealAssetData.TotalEntries: %d\n", UnrealAssetData.TotalEntries);
+    for (i = 0; i < 213; i++)
+    {
+        kinData KIN;
+    }
+    //FSeek(19403);
+    //kinData Name;
+    //name Name2;
+};
+
+fileData FILE;
