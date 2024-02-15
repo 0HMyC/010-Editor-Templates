@@ -19,9 +19,10 @@ enum<u8> times
     EarlyMorning = 0,
     Morning = 1,
     Lunchtime = 2,
-    Afternoon = 3,
+    Daytime = 3,
     AfterSchool = 4,
     Evening = 5,
+    LateNight = 6
 };
 
 typedef struct calendarGroup
