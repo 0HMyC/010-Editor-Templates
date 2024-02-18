@@ -56,6 +56,13 @@ typedef struct chunkSep
 
 typedef struct chunkNPC
 {
+    // Quick fix for files with incorrect Segment counts
+    // TODO: Better fix + figure out 0x7805 ones
+    if (ReadUShort(FTell() + 6) != 1000 && ReadUShort(FTell() + 6) != 1400)
+    {
+        FSeek(FTell() + 8);
+        return;
+    }
     u32 PositionID <bgcolor=0x00FF00>;
     chID TexCharID <comment = "nX_0_0_0.tmx", bgcolor=0xFF77FF>;
     u8 TexVarID <comment = "n0_X_0_0.tmx", bgcolor=0xDD55DD>;
@@ -88,9 +95,14 @@ typedef struct npcGroup(u8 atEOF)
 
 typedef struct chunkArr(u32 tot)
 {
-    while (FTell() < (tot * 16) + 8)
+    local u32 endPos = (tot * 16) + 8;
+    if (FileSize() < endPos)
     {
-        if (FTell() + 16 == (tot * 16) + 8)
+        endPos = FileSize();
+    }
+    while (FTell() < endPos)
+    {
+        if (FTell() + 16 >= endPos)
         {
             npcGroup GroupNPC(1) <name = "Group">;
         }
@@ -105,7 +117,8 @@ typedef struct npcPackDAT
 {
     packHeader Hed <name = "Header">;
     chunkArr AllChunks(Hed.TotalSegments) <name = "NPC Groups">;
-    u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
+    if (FTell() < FileSize())
+        u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
 };
 
 npcPackDAT FILE;
