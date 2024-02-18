@@ -11,8 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-typedef ubyte u8;
-typedef uint u32;
+#include "types.h"
+LittleEndian();
 
 enum<u8> times
 {
