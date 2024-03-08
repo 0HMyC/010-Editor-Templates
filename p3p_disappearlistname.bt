@@ -1,0 +1,40 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: P3PDisappearListName.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse disappearListName.dat
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+typedef struct listHeader
+{
+    u32 ListBytesLen <format = hex, bgcolor = 0xFF00FF, comment = "Length of list in bytes">;
+    u32 ListNum <bgcolor = 0xFF0000, comment = "Number of entries in list">;
+};
+
+typedef struct listEntry
+{
+    local u8 nameLen = FTell();
+    string Name <bgcolor = 0x00FF00>;
+    nameLen = 41 - (FTell() - nameLen);
+    u8 Padding[nameLen] <bgcolor = 0x0000FF>;
+    
+};
+
+typedef struct dlnFile
+{
+    listHeader Header;
+    listEntry List[Header.ListNum];
+    if (FTell() < FileSize())
+        u8 DupeBytes[FileSize() - FTell()] <bgcolor = 0x0000FF, comment = "Unused, typically duplicated bytes. Ignore">;
+};
+
+dlnFile FILE;
