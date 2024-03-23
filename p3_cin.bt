@@ -47,145 +47,21 @@ typedef struct multiplyMat
     u16 Alpha <bgcolor = 0xCCCCCC>;
 };
 
-typedef struct UnknownChunk7
+typedef struct UnknownChunk
 {
     sectionType SectionID <comment = "Defines chunk type?">;
     u8 Field01;
     multiplyMat Material <comment = "Affects colour and transparency of object">;
-    u16 Field0A <bgcolor = 0x00FFFF, comment = "X Coord? Used for position or mesh definition?">;
-    // TODO: The values used to check if Field0A and Field0C
-    // go out of bounds of screen width/height (assuming they are POS coords)
-    // are not based on P3's framebuffer size but instead the generic 640x480
-    // This is inaccurate and I need to replace those numbers with accurate ones kk
-    if (Field0A >= 640)
-        Printf("[0x%X:UnknownChunk7] Field0A greater than \"max\" width!\n", FTell() - 2);
-    s16 Field0C <bgcolor = 0x00FFFF, comment = "Y Coord? Used for position or mesh definition?">;
-    if (Field0C >= 480)
-        Printf("[0x%X:UnknownChunk7] Field0C greater than \"max\" height!\n", FTell() - 2);
+    // These seem to define the X and Y coordinates for the current "vertex"
+    // of an animated object; given that CIN's work with 2D animations you'd expect
+    // there would be 4 of these for a quad or 6 for a triangulated square, but
+    // there are actually 5 vertices per-frame of animation defined???
+    // TODO: Figure that out!!!
+    s16 VertX <bgcolor = 0x00FFFF, comment = "Vertex X Coordinate?">;
+    s16 VertY <bgcolor = 0x00FFFF, comment = "Vertex Y Coordinate?">;
     u16 Field0E <bgcolor = 0x00FFFF>;
     u16 Field10 <bgcolor = 0x00FFFF>;
 };
-
-/*// Dunno what this does; seems to be a list of constant
-// 0x00000000 0x00000000 0x000000FF 0x00000000 0x0000
-typedef struct UnknownChunk1
-{
-    u32 Field00;
-    u32 Field04;
-    u32 Field08 <format = hex>;
-    u32 Field0C;
-    u16 Field10;
-};
-
-typedef struct unknownSeperator7
-{
-    u16 Field00 <format = hex>;
-    u32 Field02;
-    u32 Field06;
-    u32 Field0A;
-    u32 Field0E;
-};
-
-typedef struct unknownSeperator7a
-{
-    u16 Field00 <format = hex>;
-    u32 Field02;
-    u16 Field06;
-};
-
-typedef struct UnknownSegment0(u8 fixSeek)
-{
-    local u32 segEnd;
-    while (true)
-    {
-        segEnd = ReadUInt(FTell() + 8);
-        if (segEnd != 0xFF000000)
-        {
-            if (segEnd == 0xFE000000)
-            {
-                UnknownChunk1 unkChunkEnd;
-            }
-            if (fixSeek)
-            {
-                local int64 pos = FTell();
-                Printf("UnknownSegment0 end at 0x%X before different segment! Will seek to 0x%X!\n", pos, pos + 10);
-                FSeek(pos + 10);
-            }
-            break;
-        }
-        else
-        {
-            UnknownChunk1 unkChunk;
-        }
-    }
-};
-
-typedef struct UnknownSegment1(u8 fixSeek)
-{
-    while (true)
-    {
-        UnknownChunk1 unkChunk;
-        if (unkChunk.Field08 == 0xFE000000)
-        {
-            local int64 pos = FTell();
-            Printf("End of chunk detected! 0x%X\n", pos - 10);
-            if (fixSeek)
-            {
-                Printf("UnknownSegment1 end at 0x%X before different segment! Will seek to 0x%X!\n", pos, pos + 10);                FSeek(pos + 10);
-            }
-            break;
-        }
-    }
-};
-
-typedef struct UnknownSegment7
-{
-    local u32 checkSep;
-    local u8 curSection = 0;
-    local u8 addAmt = 0;
-    while (true) {
-        checkSep = ReadUInt();
-        if (checkSep == 0xFF00) {
-            unknownSeperator7 unkSep;
-            curSection += addAmt;
-        }
-        else if (checkSep == 0xFE00) {
-            unknownSeperator7 unkSep;
-            if (curSection < 3) {
-                curSection += addAmt;
-            }
-            else {
-                unknownSeperator7a unkSepEnd;
-                break;
-            }
-        }
-        else {
-            UnknownChunk7 unkChunk;
-            // Printf("0x%X UnknownChunk7 - SectionID: %d\n", FTell() - 18, unkChunk.SectionID);
-            //if (unkChunk.Material.Red != 15 && unkChunk.Material.Red != 255)
-            //    Printf("0x%X UnknownChunk7 - Field02: %d\n", FTell() - 16, unkChunk.Field02);
-            if (addAmt != unkChunk.SectionID)
-                addAmt = unkChunk.SectionID;
-        }
-    }
-};
-
-void loadSegmentType(u8 segID, u8 doFix)
-{
-    switch (segID)
-    {
-        case UNK_00:
-            if (FileSize() > (FTell() + 18))
-            {
-                UnknownSegment0 Segment0(doFix) <bgcolor = 0x00AAAA>;
-            }
-            break;
-        case UNK_01: UnknownSegment1 Segment1(doFix) <bgcolor = 0x00FFFF>; break;
-        case UNK_07: UnknownSegment7 Segment7 <bgcolor = 0xDDDD00, comment = "Probably for animation data?">; break;
-        case UNK_19: UnknownSegment7 Segment25 <bgcolor = 0xFF0000>; break;
-        default: Printf("segType %d not currently supported!\n", segID); break;
-    }
-}*/
 
 typedef struct cin
 {
@@ -193,21 +69,8 @@ typedef struct cin
     FSeek(FTell() + 10);
     while(FTell() < FileSize())
     {
-        UnknownChunk7 Test <bgcolor = 0xDDDD00>;
-        //FSeek(FTell() + 18);
+        UnknownChunk Test <bgcolor = 0xDDDD00>;
     }
-    /*local u8 i;
-    for (i = 0; i < 28; i++)
-    {
-        if (i <= 26 && Header.SegmentTypes[i + 1] != UNK_00)
-        {
-            loadSegmentType(Header.SegmentTypes[i], true);
-        }
-        else
-        {
-            loadSegmentType(Header.SegmentTypes[i], false);
-        }
-    }*/
 };
 
 cin FILE;
