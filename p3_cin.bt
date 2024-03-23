@@ -38,29 +38,33 @@ typedef struct cinHeader
 
 typedef struct multiplyMat
 {
-    u16 Red <bgcolor = 0x5555FF>;
+    u16 Red;
     // I didn't confirm that this field is actually Green but like, red and blue are
     // confirmed and it fits the typical RGBA pattern, its not like this is gonna be.
     // yellow or smth LMAO :3
-    u16 Green <bgcolor = 0x55FF55>;
-    u16 Blue <bgcolor = 0xFF5555>;
-    u16 Alpha <bgcolor = 0xCCCCCC>;
+    u16 Green;
+    u16 Blue;
+    u16 Alpha;
 };
 
 typedef struct UnknownChunk
 {
     sectionType SectionID <comment = "Defines chunk type?">;
-    u8 Field01;
-    multiplyMat Material <comment = "Affects colour and transparency of object">;
+    s8 Field01 <comment = "Probably ID of object to animate?">;
+    multiplyMat Material <bgcolor = 0x55FF55, comment = "Affects colour and transparency of object">;
     // These seem to define the X and Y coordinates for the current "vertex"
     // of an animated object; given that CIN's work with 2D animations you'd expect
     // there would be 4 of these for a quad or 6 for a triangulated square, but
     // there are actually 5 vertices per-frame of animation defined???
     // TODO: Figure that out!!!
-    s16 VertX <bgcolor = 0x00FFFF, comment = "Vertex X Coordinate?">;
-    s16 VertY <bgcolor = 0x00FFFF, comment = "Vertex Y Coordinate?">;
-    u16 Field0E <bgcolor = 0x00FFFF>;
-    u16 Field10 <bgcolor = 0x00FFFF>;
+    s16 VertX <bgcolor = 0xCC55FF, comment = "Vertex X Coordinate?">;
+    s16 VertY <bgcolor = 0xCC55FF, comment = "Vertex Y Coordinate?">;
+    s16 Field0E <bgcolor = 0x00FFFF>;
+    s16 Field10 <bgcolor = 0x00FFFF>;
+    if (Field0E != 0)
+        Printf("[0x%X:UnknownChunk] Field0E Has value %03d assigned!\n", FTell() - 4, Field0E);
+    if (Field10 != 0)
+        Printf("[0x%X:UnknownChunk] Field10 Has value %03d assigned!\n", FTell() - 4, Field10);
 };
 
 typedef struct cin
