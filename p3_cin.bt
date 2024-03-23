@@ -27,7 +27,7 @@ enum<u8> sectionType
 {
     UNK_SEC_00 = 0,    
     UNK_SEC_01 = 1,
-    UNK_SEC_02 = 2,
+    UNK_SEC_02 = 2, // Animation Data
 };
 
 typedef struct cinHeader
@@ -47,19 +47,33 @@ typedef struct UnknownChunk1
     u16 Field10;
 };
 
+typedef struct segSevenMat
+{
+    u16 Red <bgcolor = 0x00FFFF, comment = "unconfirmed; very likely">;
+    u16 Green <bgcolor = 0x00FFFF, comment = "unconfirmed; very likely">;
+    u16 Blue <bgcolor = 0x00FFFF, comment = "unconfirmed; very likely">;
+    u16 Alpha <bgcolor = 0xCCCCCC>;
+};
+
 typedef struct UnknownChunk7
 {
     sectionType SectionID <comment = "Used by template to determine end of Segment 7">;
     u8 Field01;
-    u16 Field02;
+    segSevenMat Material <comment = "Assumed, unconfirmed">;
+    /*u16 Field02;
     u16 Field04;
     u16 Field06;
-    u16 Field08;    
-    u8 Field0A;
-    u8 Field0B;
-    u16 Field0C;
-    u16 Field0E;
-    u16 Field10;
+    u16 Field08;*/    
+    //u8 Field0A <bgcolor = 0x00FFFF>;
+    //u8 Field0B <bgcolor = 0x00FFFF>;
+    u16 Field0A <bgcolor = 0x00FFFF>;
+    if (Field0A >= 640)
+        Printf("[0x%X:UnknownChunk7] Field0A greater than \"max\" width!\n", FTell() - 2);
+    s16 Field0C <bgcolor = 0x00FFFF>;
+    if (Field0C >= 480)
+        Printf("[0x%X:UnknownChunk7] Field0C greater than \"max\" height!\n", FTell() - 2);
+    u16 Field0E <bgcolor = 0x00FFFF>;
+    u16 Field10 <bgcolor = 0x00FFFF>;
 };
 
 typedef struct unknownSeperator7
@@ -132,6 +146,7 @@ typedef struct UnknownSegment7
         checkSep = ReadUInt();
         if (checkSep == 0xFF00) {
             unknownSeperator7 unkSep;
+            curSection += addAmt;
         }
         else if (checkSep == 0xFE00) {
             unknownSeperator7 unkSep;
@@ -146,8 +161,8 @@ typedef struct UnknownSegment7
         else {
             UnknownChunk7 unkChunk;
             // Printf("0x%X UnknownChunk7 - SectionID: %d\n", FTell() - 18, unkChunk.SectionID);
-            if (unkChunk.Field02 != 15 && unkChunk.Field02 != 255)
-                Printf("0x%X UnknownChunk7 - Field02: %d\n", FTell() - 16, unkChunk.Field02);
+            //if (unkChunk.Material.Red != 15 && unkChunk.Material.Red != 255)
+            //    Printf("0x%X UnknownChunk7 - Field02: %d\n", FTell() - 16, unkChunk.Field02);
             if (addAmt != unkChunk.SectionID)
                 addAmt = unkChunk.SectionID;
         }
@@ -174,7 +189,13 @@ void loadSegmentType(u8 segID, u8 doFix)
 typedef struct cin
 {
     cinHeader Header;
-    local u8 i;
+    FSeek(FTell() + 10);
+    while(FTell() < FileSize())
+    {
+        UnknownChunk7 Test <bgcolor = 0xDDDD00>;
+        //FSeek(FTell() + 18);
+    }
+    /*local u8 i;
     for (i = 0; i < 28; i++)
     {
         if (i <= 26 && Header.SegmentTypes[i + 1] != UNK_00)
@@ -185,7 +206,7 @@ typedef struct cin
         {
             loadSegmentType(Header.SegmentTypes[i], false);
         }
-    }
+    }*/
 };
 
 cin FILE;
