@@ -25,15 +25,27 @@ enum<u8> segType
 
 enum<u8> sectionType
 {
-    UNK_SEC_00 = 0,    
-    UNK_SEC_01 = 1,
-    UNC_ANIMATION = 2, // Animation Data
+    UNK_VISBOUNDS = 0, // Seems to define the bounds of the visible area for the anim?
+    UNK_SEC_01 = 1, // Possibly used for UV's or something similar???
+    CIN_ANIMATION = 2, // Mesh Animation Data
 };
 
 typedef struct cinHeader
 {
-    char Magic[4];
-    segType SegmentTypes[28];
+    local int64 fPos = FTell();
+    local char TestMagic[4] = ReadString(fPos, 4);
+    if (TestMagic != "CIN")
+    {
+        Printf("CIN Magic not detected! File may be malformed or incorrect format!\n");
+        segType SegmentTypes[26]; // "Skip" over bytes not in old version
+    }
+    else
+    {
+        char Magic[4];
+        segType SegmentTypes[28];
+    }
+    
+    
 };
 
 typedef struct multiplyMat
@@ -50,21 +62,31 @@ typedef struct multiplyMat
 typedef struct UnknownChunk
 {
     sectionType SectionID <comment = "Defines chunk type?">;
-    s8 Field01 <comment = "Probably ID of object to animate?">;
+    if (SectionID >= 3)
+        Printf("[0x%X:UnknownChunk] Unknown SectionID value 0x%X!\n", FTell() - 1, SectionID);
+    s8 Field01 <comment = "Probably ID of object to animate? Gets very broken when forced to incorrect values">;
+    if (Field01 != 1 && Field01 != -1)
+        Printf("[0x%X:UnknownChunk] Field01 is not 1 or -1! Value: %d\n", FTell() - 1, Field01);
     multiplyMat Material <bgcolor = 0x55FF55, comment = "Affects colour and transparency of object">;
     // These seem to define the X and Y coordinates for the current "vertex"
     // of an animated object; given that CIN's work with 2D animations you'd expect
     // there would be 4 of these for a quad or 6 for a triangulated square, but
     // there are actually 5 vertices per-frame of animation defined???
     // TODO: Figure that out!!!
-    s16 VertX <bgcolor = 0xCC55FF, comment = "Vertex X Coordinate?">;
-    s16 VertY <bgcolor = 0xCC55FF, comment = "Vertex Y Coordinate?">;
+    s16 VertX <bgcolor = 0xCC55FF, comment = "Vertex X Coordinate? Range -650 to 650?">;
+    s16 VertY <bgcolor = 0xCC55FF, comment = "Vertex Y Coordinate? Range -650 to 650?">;
+    /*
+    if (VertX >= 640)
+        Printf("[0x%X:UnknownChunk] VertX outside framebuffer!\n", FTell() - 4);
+    if (VertY >= 448)
+        Printf("[0x%X:UnknownChunk] VertY outside framebuffer!\n", FTell() - 2);
+    */
     s16 Field0E <bgcolor = 0x00FFFF>;
     s16 Field10 <bgcolor = 0x00FFFF>;
     if (Field0E != 0)
         Printf("[0x%X:UnknownChunk] Field0E Has value %03d assigned!\n", FTell() - 4, Field0E);
     if (Field10 != 0)
-        Printf("[0x%X:UnknownChunk] Field10 Has value %03d assigned!\n", FTell() - 4, Field10);
+        Printf("[0x%X:UnknownChunk] Field10 Has value %03d assigned!\n", FTell() - 2, Field10);
 };
 
 typedef struct cin
