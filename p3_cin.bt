@@ -11,92 +11,103 @@
 //   History: 
 //------------------------------------------------
 
+// <comment=""> values that include (Pio) are comments taken from Pio's template,
+// all other values were written by me
+
 #include "types.h"
 
 LittleEndian();
 
-enum<u8> segType
-{
-    UNK_00 = 0,
-    UNK_01 = 1,
-    UNK_07 = 7,
-    UNK_19 = 25,
-};
-
 enum<u8> sectionType
 {
-    UNK_VISBOUNDS = 0, // Seems to define the bounds of the visible area for the anim?
-    UNK_SEC_01 = 1, // Possibly used for UV's or something similar???
-    CIN_ANIMATION = 2, // Mesh Animation Data
+    CIN_MASK = 0, // Masks out all textures outside shape (defined by lines)
+    CIN_SHAPE = 1, // Renders filled shape defined by lines
+    CIN_TEXTURE = 2, // Renders textured triangle
 };
 
 typedef struct cinHeader
 {
     local int64 fPos = FTell();
     local char TestMagic[4] = ReadString(fPos, 4);
+    // Check for Magic string; if it's not present, print a warning but
+    // read the file as if it's an old/unused format CIN that lacks the first 6 bytes
     if (TestMagic != "CIN")
     {
-        Printf("CIN Magic not detected! File may be malformed or incorrect format!\n");
-        segType SegmentTypes[26]; // "Skip" over bytes not in old version
+        Printf("CIN Magic not detected! File may be malformed, outdated, or incorrect format!\n");
     }
     else
     {
         char Magic[4];
-        segType SegmentTypes[28];
+        u16 Field04;
     }
-    
-    
+    u16 Loop <comment = "Frame at which the animation will wait until the cutin gets hidden - (Pio)">;
+    u16 ObjectCount;
+    u8 Unk_Colours[22] <comment = "Forces colours on animation Objects in some way">;
 };
 
 typedef struct multiplyMat
 {
     u16 Red;
-    // I didn't confirm that this field is actually Green but like, red and blue are
-    // confirmed and it fits the typical RGBA pattern, its not like this is gonna be.
-    // yellow or smth LMAO :3
     u16 Green;
     u16 Blue;
     u16 Alpha;
 };
 
-typedef struct UnknownChunk
+typedef struct CinChunk
 {
     sectionType SectionID <comment = "Defines chunk type?">;
     if (SectionID >= 3)
-        Printf("[0x%X:UnknownChunk] Unknown SectionID value 0x%X!\n", FTell() - 1, SectionID);
-    s8 Field01 <comment = "Probably ID of object to animate? Gets very broken when forced to incorrect values">;
-    if (Field01 != 1 && Field01 != -1)
-        Printf("[0x%X:UnknownChunk] Field01 is not 1 or -1! Value: %d\n", FTell() - 1, Field01);
+        Printf("[0x%X:CinChunk] Unknown SectionID value 0x%X!\n", FTell() - 1, SectionID);
+    s8 Prop <comment = "Probably ID of object to animate? Gets very broken when forced to incorrect values">;
+    if (Prop >= 3 || Prop <= -3)
+        Printf("[0x%X:CinChunk] Prop is outside known range! Value: %d\n", FTell() - 1, Prop);
     multiplyMat Material <bgcolor = 0x55FF55, comment = "Affects colour and transparency of object">;
-    // These seem to define the X and Y coordinates for the current "vertex"
-    // of an animated object; given that CIN's work with 2D animations you'd expect
-    // there would be 4 of these for a quad or 6 for a triangulated square, but
-    // there are actually 5 vertices per-frame of animation defined???
-    // TODO: Figure that out!!!
-    s16 VertX <bgcolor = 0xCC55FF, comment = "Vertex X Coordinate? Range -650 to 650?">;
-    s16 VertY <bgcolor = 0xCC55FF, comment = "Vertex Y Coordinate? Range -650 to 650?">;
-    /*
-    if (VertX >= 640)
-        Printf("[0x%X:UnknownChunk] VertX outside framebuffer!\n", FTell() - 4);
-    if (VertY >= 448)
-        Printf("[0x%X:UnknownChunk] VertY outside framebuffer!\n", FTell() - 2);
-    */
-    s16 Field0E <bgcolor = 0x00FFFF>;
-    s16 Field10 <bgcolor = 0x00FFFF>;
-    if (Field0E != 0)
-        Printf("[0x%X:UnknownChunk] Field0E Has value %03d assigned!\n", FTell() - 4, Field0E);
-    if (Field10 != 0)
-        Printf("[0x%X:UnknownChunk] Field10 Has value %03d assigned!\n", FTell() - 2, Field10);
+    s16 StartX <bgcolor = 0xCC55FF, comment = "Starting X Coordinate">;
+    s16 StartY <bgcolor = 0xCC55FF, comment = "Starting Y Coordinate">;
+    // Seemingly only used for CIN_MASK & CIN_SHAPE if Prop == 2?
+    s16 EndX <bgcolor = 0x00FFFF, comment = "Ending X coordinate; used for lines">;
+    s16 EndY <bgcolor = 0x00FFFF, comment = "Ending X coordinate; used for lines">;
 };
+
+typedef struct frame
+{
+    local int frameEnd;
+    while (true)
+    {
+        frameEnd = ReadShort();
+        if (frameEnd == -256)
+        {
+            CinChunk FrameEnd;
+            break;
+        }
+        else
+        {
+            CinChunk Chunk;
+        }
+    }
+};
+
+typedef struct
+{
+    local int segEnd;
+    while (true)
+    {
+        segEnd = ReadShort();
+        if (segEnd == -512)
+        {
+            CinChunk SegmentEnd;
+            break;
+        }
+        frame FrameList <bgcolor = 0xDDDD00>;
+    }
+} animationObject <optimize = false>;
 
 typedef struct cin
 {
     cinHeader Header;
+    // TODO: is there ever data here?
     FSeek(FTell() + 10);
-    while(FTell() < FileSize())
-    {
-        UnknownChunk Test <bgcolor = 0xDDDD00>;
-    }
+    animationObject Object[Header.ObjectCount];
 };
 
 cin FILE;
