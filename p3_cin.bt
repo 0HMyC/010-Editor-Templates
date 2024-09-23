@@ -11,8 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-// <comment=""> values that include (Pio) are comments taken from Pio's template,
-// all other values were written by me
+// <comment=""> values that include (Pio) are comments taken from
+// Pio's template; all other values were written by me
 
 #include "types.h"
 
@@ -38,7 +38,7 @@ typedef struct cinHeader
     else
     {
         char Magic[4];
-        u16 Field04;
+        u16 Field04; // TODO: rename this Unknown or smth lol
     }
     u16 HoldFrame <comment = "Frame at which the animation will wait until the cutin gets hidden - (Pio)">;
     u16 ObjectCount;

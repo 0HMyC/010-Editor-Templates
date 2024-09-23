@@ -37,16 +37,18 @@ enum<u16> times
     Afternoon = 4,
     AfterSchool = 5,
     Evening = 6,
+    // LateNight = 7,
+    // DarkHour = 8, // assumed
 };
 
 typedef struct calendarGroup
 {
-    months OnMonth <bgcolor=0xFF77FF>;
-    u16 OnDay <bgcolor=0xDD55DD>;
-    times OnTime <bgcolor=0xFF5555>;
+    months Month <comment = "Month to load group on/after", bgcolor=0xFF77FF>;
+    u16 Day <comment = "Day to load group on/after", bgcolor=0xDD55DD>;
+    times Time <comment = "Time to load group on/after",bgcolor=0xFF5555>;
     u16 Field06 <format=hex, bgcolor=0x00FFFF>;
     u32 Field08 <format=hex, bgcolor=0x00FFFF>;
-    u32 GroupID <comment = "NPC Group to load", bgcolor=0x00FF00>;
+    u32 GroupIndex <comment = "NPC Group to load", bgcolor=0x00FF00>;
     u32 Field10 <format=hex, bgcolor=0x00FFFF>;
     u32 Field14 <format=hex, bgcolor=0x00FFFF>;
     u32 Field18 <format=hex, bgcolor=0x00FFFF>;
@@ -78,18 +80,19 @@ typedef struct npcGroupSep
 
 typedef struct defNPC
 {
-    u16 NPCID <bgcolor = 0xFFFF00, comment = "Pulls from FBN most likely">;
-    u16 Field02 <bgcolor = 0x00FFFF>;
-    u16 ModelID <comment = "N%05d.RMD", bgcolor = 0x7F55FF>;
-    u16 AnimationID <comment = "Plays this animation from RMD">;
-    s32 MessageIndex <comment = "Index of message to call from BMD">;
-    s32 ProcedureIndex <comment = "Index of procedure to call from BF">;
-    s32 HideOnBitflag <comment = "Hides object if flag is enabled">;
-    u32 Field14 <bgcolor = 0x0000FF>;
-    u32 Field18 <bgcolor = 0x0000FF>;
-    u32 Field1C <bgcolor = 0x0000FF>;
-    if (Field02 != 5)
-        Printf("defNPC 0x%X - Field02: %d\n", FTell() - 30, Field02);
+    u16 ResID <bgcolor = 0xFFFF00, comment = "Pulls from FBN most likely">;
+    // TODO: How do these map to N%05d.RMD files?
+    u16 ModelMajorID <bgcolor = 0xFF7F55>;
+    u16 ModelMinorID <bgcolor = 0x7F55FF>;
+    u16 AnimationID <comment = "Plays this animation from RMD", bgcolor = 0x77FF77>;
+    s32 MessageIndex <comment = "Index of message to call from BMD", bgcolor = 0x999999>;
+    s32 ProcedureIndex <comment = "Index of procedure to call from BF", bgcolor = 0xFF7777>;
+    s32 HideOnFlag <comment = "Hides NPC if flag is enabled", bgcolor = 0xEE88AA>;
+    u32 Field14 <bgcolor = 0x000000>;
+    u32 Field18 <bgcolor = 0x000000>;
+    u32 Field1C <bgcolor = 0x000000>;
+    if (ModelMajorID != 5 && ModelMajorID != 0)
+        Printf("defNPC 0x%X - ModelMajorID: %d\n", FTell() - 30, ModelMajorID);
     if (Field14 != 0)
         Printf("defNPC 0x%X - Field14: %d\n", FTell() - 12, Field14);
     if (Field18 != 0)
@@ -113,7 +116,7 @@ typedef struct npcGroup
     {
         defNPC NPCDef;
     }
-    npcGroupSep GroupSep <name = "NPC Group Seperator", bgcolor=0x0000FF>;
+    npcGroupSep GroupEnd <name = "NPC Group Seperator", bgcolor=0x0000FF>;
 };
 
 typedef struct calendarArr(u32 size)
