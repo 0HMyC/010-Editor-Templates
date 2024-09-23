@@ -40,7 +40,7 @@ typedef struct cinHeader
         char Magic[4];
         u16 Field04;
     }
-    u16 Loop <comment = "Frame at which the animation will wait until the cutin gets hidden - (Pio)">;
+    u16 HoldFrame <comment = "Frame at which the animation will wait until the cutin gets hidden - (Pio)">;
     u16 ObjectCount;
     u8 Unk_Colours[22] <comment = "Forces colours on animation Objects in some way">;
 };
