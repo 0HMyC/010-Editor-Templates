@@ -46,7 +46,7 @@ typedef struct calendarArr(u32 size)
 
 typedef struct npcTblDAT
 {
-    u32 Magic <format=hex, name = "Magic", comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
+    u32 GroupsLength <format=hex, name = "Size", comment = "Length of all calendar groups in bytes", bgcolor=0x00BB00>;
     u32 TotalGroups <name = "Total Groups", bgcolor=0xFF0000>;
     calendarArr LoadDates(TotalGroups) <name = "Calendar Groups", comment = "Changes NPC groups past specified Calendar dates and times">;
     u32 DupeBytes[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;

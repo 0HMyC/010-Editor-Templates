@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: cmmDispName.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse cmmDispName(F).dat file
+//  Category: Persona 3 Portable
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+typedef struct dispName
+{
+    u32 CharacterID <comment = "ID of character (nX_0_0_0.tmx)", bgcolor=0x00FFFF>;
+    u32 LearnedFlag <comment = "Index of bitflag to determine if name has been learned", bgcolor=0xFF00FF>;
+    char InitName[17] <comment = "Initial name to display if LearnedFlag is Off (or set to 0?)", bgcolor=0x00FF00>;
+    char LearnedName[17] <comment = "Name to use when LearnedFlag is set to On", bgcolor=0xFFFF00>;
+    u16 Field2A <comment = "Unknown, padding?", bgcolor=0x00FFFF>;
+};
+
+typedef struct nameDAT
+{
+    u32 NamesLength <name = "Size", comment="Total length of all names in bytes", bgcolor=0x00BB00>;
+    u32 TotalNames <name = "Total Names", bgcolor=0xFF0000>;
+    dispName NameList[TotalNames];
+};
+
+nameDAT FILE;

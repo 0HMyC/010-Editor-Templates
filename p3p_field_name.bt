@@ -20,7 +20,7 @@ typedef struct objName
 
 typedef struct nameDAT
 {
-    u32 NamesLength <name = "Magic", comment="Total length of all names in bytes", bgcolor=0x00BB00>;
+    u32 NamesLength <name = "Size", comment="Total length of all names in bytes", bgcolor=0x00BB00>;
     u32 TotalNames <name = "Total Names", bgcolor=0xFF0000>;
     objName ObjectNames[TotalNames] <name = "Object Names", comment = "String can get cut-off in-game if too long">;
     u32 HeaderDupe[(FileSize() - FTell()) / 4] <name = "Duplicate Bytes", bgcolor=0x0000FF, comment = "Unused, can be ignored">;
