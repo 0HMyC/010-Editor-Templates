@@ -64,7 +64,7 @@ typedef struct chunkNPC
         return;
     }
     u32 PositionID <bgcolor=0x00FF00>;
-    chID TexCharID <comment = "nX_0_0_0.tmx", bgcolor=0xFF77FF>;
+    chID CharacterID <comment = "NPC's character ID, determines nametag and texture (nX_0_0_0.tmx)", bgcolor=0xFF77FF>;
     u8 TexVarID <comment = "n0_X_0_0.tmx", bgcolor=0xDD55DD>;
     u16 Field06 <format=hex, comment = "Always 0xE803?", bgcolor=0x0000FF>;
     u32 ProcedureIndex <comment = "Calls script procedure from corresponding BF file", bgcolor=0xFFFF00>;
