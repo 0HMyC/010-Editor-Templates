@@ -1,0 +1,173 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: KHCVBL.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse cvbl model files used in Kingdom Hearts games.
+//  Category: Kingdom Hearts
+// File Mask: *.cvbl
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// Some1fromthedark's CVBL Converter python script was heavily refrenced when making
+// this template, huge shoutout and thanks to him for making that tool and RE'ing the
+// format as much as he did in the process. This template would not exist without his work.
+
+#include "types.h"
+LittleEndian();
+
+typedef struct header
+{
+    u32 Field00 <format = hex, comment = "Magic bytes?">;
+    u32 NumMeshes <name = "Mesh Count", comment = "Total number of meshes in file", bgcolor = 0xFF5555>;
+    u16 num_unknown_entries <comment = "Total number of entries whose contents are unknown; name from converter script", bgcolor = 0x00AAAA>;
+    u16 unknown_header_value <comment = "Name from converter script; enables/disables animating textures?">;
+    u32 Field0C; // Padding/Reserved?
+};
+
+typedef struct unknown_entry
+{
+    u32 Field00;
+    u32 Field04;
+    u32 Field08;
+    u32 Field0C;
+    u32 Field10;
+    u32 Field14;
+    u32 Field18;
+    u32 Field1C;
+};
+
+typedef struct meshHeader
+{
+    u16 Field00;
+    u16 joint_style <bgcolor = 0x8888FF>;
+    s32 material <bgcolor = 0xCCCC00>;
+    s32 Field08;
+    u32 MeshOffset <format = hex, comment = "Where mesh data is located in file", bgcolor = 0x00FF00>;
+};
+
+typedef struct subsectionHeader
+{
+    u32 subsection_type <bgcolor = 0xFF55FF>;
+    u32 subsection_length <bgcolor = 0xDD00DD>;
+};
+
+typedef struct submeshHeader
+{
+    u32 num_verts <bgcolor = 0x0000FF>;
+    u32 Field04;
+    u32 Field08;
+    u32 Field0C;
+    u32 Field10;
+    u32 Field14;
+};
+
+typedef struct submeshVertex_Joint8
+{
+    f32 NormalX <bgcolor = 0x99FF33>;
+    f32 NormalY <bgcolor = 0x99FF33>;
+    f32 NormalZ <bgcolor = 0x99FF33>;
+    u16 joint_slot_id <bgcolor = 0xDD9900>;
+    u8 Field0E;
+    u8 Field0F;
+    f32 TexCoord_X <bgcolor = 0x999999>;
+    f32 TexCoord_Y <bgcolor = 0xBBBBBB>;
+    f32 Field18;
+    u32 Field1C;
+    f32 Vertex_X <bgcolor = 0x00CC00>;
+    f32 Vertex_Y <bgcolor = 0x00CC00>;
+    f32 Vertex_Z <bgcolor = 0x00CC00>;
+    f32 Weight <bgcolor = 0xFF00BB>;
+};
+
+typedef struct jointUpdate_Joint8 // "Excludes To-Local Transform"
+{
+    u32 joint_id <bgcolor = 0xFFFF00>;
+    u32 joint_slot_id <bgcolor = 0xDD9900>;
+    f32 Field08;
+    f32 Field0C;
+    f32 Field10;
+    f32 Field14;
+    f32 Field18;
+    f32 Field1C;
+    f32 Field20;
+    f32 Field24;
+    f32 Field28;
+    f32 Field2C;
+    f32 Field30;
+    f32 Field34;
+    f32 Field38;
+    f32 Field3C;
+    f32 Field40;
+    f32 Field44;
+    f32 Field48;
+    f32 Field4C;
+    f32 Field50;
+    f32 Field54;
+    f32 Field58;
+    f32 Field5C;
+    f32 Field60;
+    f32 Field64;
+    f32 Field68;
+    f32 Field6C;
+    f32 Field70;
+    f32 Field74;
+};
+
+typedef struct meshEntry
+{
+    meshHeader MeshMetadata;
+    local int64 nextMeshPos = FTell();
+    FSeek(MeshMetadata.MeshOffset + 16); // jump to mesh data, skipping padding?/seperators?
+    local u8 endLoop = 0;
+    while (FTell() < FileSize())
+    {
+        if (endLoop == 1) { break; }
+        struct
+        {
+            // Printf("FTell: %02d", FTell());
+            subsectionHeader Metadata;
+            // Printf("Metadata.subsection_type: %02X\n", Metadata.subsection_type);
+            if (Metadata.subsection_type != 1 && Metadata.subsection_type != 17)
+            {
+                if (Metadata.subsection_type != 32768)
+                {
+                    Printf("Unsupported subsection type!\n");
+                }
+                endLoop = 1;
+                break;
+            }
+            switch (Metadata.subsection_type)
+            {
+                case 1:
+                    submeshHeader submeshTest;
+                    if (MeshMetadata.joint_style == 8)
+                    {
+                        submeshVertex_Joint8 Vertices[submeshTest.num_verts];
+                    }
+                    else
+                    {
+                        u8 Data[Metadata.subsection_length - 32];
+                    }
+                    break;
+                case 17:
+                    if (MeshMetadata.joint_style == 8)
+                    {
+                        jointUpdate_Joint8 JointUpdate;
+                        break;
+                    }
+                default: u8 Data[Metadata.subsection_length - 8];
+            }
+            
+        } MeshSubsection <optimize = false>;
+    }
+    FSeek(nextMeshPos); // return to where next mesh entry header is
+};
+
+header Test <bgcolor = 0x00FFFF>;
+if (Test.unknown_header_value != 0)
+    unknown_entry UnkEntries[Test.num_unknown_entries] <comment = "Used for animated textures?", bgcolor = 0x00FFFF>;
+    FSeek(16 + Test.num_unknown_entries * 32); // for safety
+meshEntry MeshEntries[Test.NumMeshes] <optimize = false, bgcolor = 0x00FFFF>;
