@@ -116,7 +116,7 @@ typedef struct jointUpdate_Joint8 // "Excludes To-Local Transform"
     f32 Field74;
 };
 
-typedef struct meshEntry
+typedef struct
 {
     meshHeader MeshMetadata;
     local int64 nextMeshPos = FTell();
@@ -164,7 +164,7 @@ typedef struct meshEntry
         } MeshSubsection <optimize = false>;
     }
     FSeek(nextMeshPos); // return to where next mesh entry header is
-};
+} meshEntry <optimize = false>;
 
 header Test <bgcolor = 0x00FFFF>;
 if (Test.unknown_header_value != 0)
