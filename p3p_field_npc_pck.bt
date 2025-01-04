@@ -42,7 +42,7 @@ enum<u8> chID
 
 typedef struct packHeader
 {
-    u32 Magic <format=hex, comment = "Could be a version number, not certain", bgcolor=0x00BB00>;
+    u32 SegmentsLength <format=hex, name = "Size", comment = "Total length of all NPC groups in bytes", bgcolor=0x00BB00>;
     u32 TotalSegments <comment = "Increments by 0x10", bgcolor=0xFF0000>;
 };
 
