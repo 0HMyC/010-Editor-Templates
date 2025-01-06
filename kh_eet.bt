@@ -1,0 +1,76 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: KHEET.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse eet files used in Kingdom Hearts Re:Chain of Memories.
+//  Category: Kingdom Hearts
+// File Mask: *.eet
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+/*
+TODO:
+        * better names than eet(NameOfThing)
+        * identify what these are even used for lmfao
+        * fix ses > eet
+            * alternatively, turn current ses template into base for ses & eet to use
+*/
+
+typedef struct sesHeader
+{
+    char Magic[4] <bgcolor = 0x00FF00>; // @SES
+    u32 Field04;
+    u32 EntryCount <comment = "Number of entries in list", bgcolor = 0xFF00FF>;
+    u32 Field0C;
+};
+
+typedef struct sesEntry
+{
+    char Name[8] <comment = "Name of entry (unknown data)", bgcolor = 0xFFFF00>; 
+    u32 Field08 <format = hex>;
+    u32 Field0C;
+    u32 Field10 <format = hex>; // Possibly not u32?
+    u32 Field14;
+    u32 Field18;
+    u32 Field1C;
+    u32 Field20 <format = hex>; // Always 0xFFFFFFFF?
+    u32 DataCount <bgcolor = 0x0000FF>;
+    u32 DataOffset <format = hex, bgcolor = 0xFF0000>;
+    u32 Field2C;
+};
+
+typedef struct sesUnknownEntry
+{
+    char Name[18] <comment = "Name of file/data?", bgcolor = 0x999900>;
+    u8 Data[142];
+};
+
+typedef struct sesList
+{
+    sesHeader Header <bgcolor = 0x00FFFF>;
+    local u32 i;
+    local int64 cPos;
+    for (i = 0; i < Header.EntryCount; i++)
+    {
+        struct
+        {
+            sesEntry Info;
+            cPos = FTell();
+            FSeek(Info.DataOffset); // Jump to location of sesEntry's data
+            local u32 s;
+            for (s = 0; s < Info.DataCount; s++)
+            {
+                sesUnknownEntry Data;
+            }
+            FSeek(cPos); // Return to original position in file
+        } Entry;
+    }
+};
+
+sesList File;

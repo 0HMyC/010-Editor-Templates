@@ -14,6 +14,11 @@
 #include "types.h"
 LittleEndian();
 
+// TODO: RTM files appear to be one of many files used in Re:CoM based on/using
+//     some kind of presumably custom but basic and generic archive/container format.
+//     This template should probably just be turned into a generic one that can be used
+//     on all applicable formats, or as a basis for the templates used in other formats.
+
 typedef struct
 {
     u32 Offset <comment = "Offset to texture data", format = hex, bgcolor = 0xFF0000>;
