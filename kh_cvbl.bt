@@ -118,7 +118,7 @@ typedef struct jointUpdate_Joint8 // "Excludes To-Local Transform"
 
 typedef struct
 {
-    meshHeader MeshMetadata;
+    meshHeader MeshMetadata <bgcolor = 0x00FFFF>;
     local int64 nextMeshPos = FTell();
     FSeek(MeshMetadata.MeshOffset + 16); // jump to mesh data, skipping padding?/seperators?
     local u8 endLoop = 0;
@@ -170,4 +170,4 @@ header Test <bgcolor = 0x00FFFF>;
 if (Test.unknown_header_value != 0)
     unknown_entry UnkEntries[Test.num_unknown_entries] <comment = "Used for animated textures?", bgcolor = 0x00FFFF>;
     FSeek(16 + Test.num_unknown_entries * 32); // for safety
-meshEntry MeshEntries[Test.NumMeshes] <optimize = false, bgcolor = 0x00FFFF>;
+meshEntry MeshEntries[Test.NumMeshes] <optimize = false>;
