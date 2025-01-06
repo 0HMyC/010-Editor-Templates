@@ -1,0 +1,47 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: KHRTM.bt
+//   Authors: moddaman
+//   Version: 1.0
+//   Purpose: Parse rtm files used in Kingdom Hearts Re:Chain of Memories.
+//  Category: Kingdom Hearts
+// File Mask: *.rtm
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "types.h"
+LittleEndian();
+
+typedef struct
+{
+    u32 Offset <comment = "Offset to texture data", format = hex, bgcolor = 0xFF0000>;
+    char FileName[20] <comment = "Name of texture file", bgcolor = 0xBBFFBB>;
+    FSkip(2); // May be part of file name, may be seperate. Skip for now
+    u8 Field0A;
+    u8 Field0B;
+    // Rightmost/Least significant byte is not part of size, some other kind of data?
+    u32 Size <comment = "Length of texture data in bytes", format = hex, bgcolor = 0xBBBBFF>;
+} texMetadata <optimize = false>;
+
+typedef struct texEntry
+{
+    texMetadata TexInfo <bgcolor = 0x00FFFF>;
+    local int64 cPos = FTell();
+    FSeek(TexInfo.Offset); // Go to texture location in file
+    u8 TexBytes[TexInfo.Size & 0x00FFFFFF] <bgcolor = 0xEE99CC>;
+    FSeek(cPos); // Return to original position
+};
+
+typedef struct textureList
+{
+    while (ReadUInt() != 0) 
+    {
+        texEntry Entry;
+    }
+    // End of texture list appears to be defined by 0x20 gap of null bytes, skip them
+    FSkip(32);
+};
+
+textureList Textures;
