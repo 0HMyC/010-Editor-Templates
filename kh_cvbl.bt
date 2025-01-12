@@ -58,34 +58,51 @@ typedef struct submeshHeader
 {
     u32 num_verts <bgcolor = 0x0000FF>;
     u32 Field04;
-    u32 Field08;
+    u32 Field08 <comment = "Size/Length of some sort?">;
     u32 Field0C;
     u32 Field10;
     u32 Field14;
 };
 
-typedef struct submeshVertex_Joint8
+// smv == submeshVertex
+typedef struct smv_Joint8
 {
     f32 NormalX <bgcolor = 0x99FF33>;
     f32 NormalY <bgcolor = 0x99FF33>;
     f32 NormalZ <bgcolor = 0x99FF33>;
     u16 joint_slot_id <bgcolor = 0xDD9900>;
-    u8 Field0E;
-    u8 Field0F;
-    f32 TexCoord_X <bgcolor = 0x999999>;
-    f32 TexCoord_Y <bgcolor = 0xBBBBBB>;
+    u8 Field0E <comment = "Related to vertex order?">;
+    u8 Field0F <comment = "Related to explicitly storing faces?">;
+    f32 TexCoordX <bgcolor = 0x999999>;
+    f32 TexCoordY <comment = "Inverted (relative to texture) by default", bgcolor = 0xBBBBBB>;
     f32 Field18;
     u32 Field1C;
-    f32 Vertex_X <bgcolor = 0x00CC00>;
-    f32 Vertex_Y <bgcolor = 0x00CC00>;
-    f32 Vertex_Z <bgcolor = 0x00CC00>;
+    f32 VertX <bgcolor = 0x00CC00>;
+    f32 VertY <bgcolor = 0x00CC00>;
+    f32 VertZ <bgcolor = 0x00CC00>;
     f32 Weight <bgcolor = 0xFF00BB>;
 };
 
-typedef struct jointUpdate_Joint8 // "Excludes To-Local Transform"
+typedef struct smv_Joint9
+{
+    f32 VertX <bgcolor = 0x00CC00>;
+    f32 VertY <bgcolor = 0x00CC00>;
+    f32 VertZ <bgcolor = 0x00CC00>;
+    u16 joint_slot_id <bgcolor = 0xDD9900>;
+    u8 Field0E <comment = "Related to vertex order?">;
+    u8 Field0F <comment = "Related to explicitly storing faces?">;
+};
+
+// Common data shared across all jointUpdate joints
+typedef struct ju_JointAll
 {
     u32 joint_id <bgcolor = 0xFFFF00>;
     u32 joint_slot_id <bgcolor = 0xDD9900>;
+};
+
+typedef struct ju_Joint8 // "Excludes To-Local Transform"
+{
+    ju_JointAll Info;
     f32 Field08;
     f32 Field0C;
     f32 Field10;
@@ -114,6 +131,76 @@ typedef struct jointUpdate_Joint8 // "Excludes To-Local Transform"
     f32 Field6C;
     f32 Field70;
     f32 Field74;
+};
+
+typedef struct ju_Joint9 // "Includes To-Local Transform"
+{
+    ju_JointAll Info;
+    f32 Field08;
+    f32 Field0C;
+    f32 Field10;
+    f32 Field14;
+    f32 Field18;
+    f32 Field1C;
+    f32 Field20;
+    f32 Field24;
+    f32 Field28;
+    f32 Field2C;
+    f32 Field30;
+    f32 Field34;
+    f32 Field38;
+    f32 Field3C;
+    f32 Field40;
+    f32 Field44;
+    f32 Field48;
+    f32 Field4C;
+    f32 Field50;
+    f32 Field54;
+    f32 Field58;
+    f32 Field5C;
+    f32 Field60;
+    f32 Field64;
+    f32 Field68;
+    f32 Field6C;
+    f32 Field70;
+    f32 Field74;
+    f32 Field78;
+    f32 Field7C;
+    f32 Field80;
+    f32 Field84;
+    f32 Field88;
+    f32 Field8C;
+    f32 Field90;
+    f32 Field94;
+    f32 Field98;
+    f32 Field9C;
+    f32 FieldA0;
+    f32 FieldA4;
+    f32 FieldA8;
+    f32 FieldAC;
+    f32 FieldB0;
+    f32 FieldB4;
+};
+
+typedef struct ju_Joint10 // "Shadow"
+{
+    ju_JointAll Info;
+    f32 Field08;
+    f32 Field0C;
+    f32 Field10;
+    f32 Field14;
+    f32 Field18;
+    f32 Field1C;
+    f32 Field20;
+    f32 Field24;
+    f32 Field28;
+    f32 Field2C;
+    f32 Field30;
+    f32 Field34;
+    f32 Field38;
+    f32 Field3C;
+    f32 Field40;
+    f32 Field44;
 };
 
 typedef struct
@@ -145,7 +232,11 @@ typedef struct
                     submeshHeader submeshTest;
                     if (MeshMetadata.joint_style == 8)
                     {
-                        submeshVertex_Joint8 Vertices[submeshTest.num_verts];
+                        smv_Joint8 Vertices[submeshTest.num_verts];
+                    }
+                    else if (MeshMetadata.joint_style == 10)
+                    {
+                        smv_Joint9 Vertices[submeshTest.num_verts];
                     }
                     else
                     {
@@ -155,7 +246,17 @@ typedef struct
                 case 17:
                     if (MeshMetadata.joint_style == 8)
                     {
-                        jointUpdate_Joint8 JointUpdate;
+                        ju_Joint8 JointUpdate;
+                        break;
+                    }
+                    else if (MeshMetadata.joint_style == 9)
+                    {
+                        ju_Joint9 JointUpdate;
+                        break;
+                    }
+                    else if (MeshMetadata.joint_style == 10)
+                    {
+                        ju_Joint10 JointUpdate;
                         break;
                     }
                 default: u8 Data[Metadata.subsection_length - 8];
