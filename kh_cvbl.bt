@@ -22,8 +22,8 @@ typedef struct header
 {
     u32 Field00 <format = hex, comment = "Magic bytes?">;
     u32 NumMeshes <name = "Mesh Count", comment = "Total number of meshes in file", bgcolor = 0xFF5555>;
-    u16 num_unknown_entries <comment = "Total number of entries whose contents are unknown; name from converter script", bgcolor = 0x00AAAA>;
-    u16 unknown_header_value <comment = "Name from converter script; enables/disables animating textures?">;
+    u16 num_animtex <comment = "Total number of meshes using animated textures (mostly certain)", bgcolor = 0x00AAAA>;
+    u16 unknown_header_value <comment = "Name from converter script, unknown entries stored preceeding mesh entries if not 0; enables/disables animating textures?">;
     u32 Field0C; // Padding/Reserved?
 };
 
@@ -267,8 +267,15 @@ typedef struct
     FSeek(nextMeshPos); // return to where next mesh entry header is
 } meshEntry <optimize = false>;
 
-header Test <bgcolor = 0x00FFFF>;
-if (Test.unknown_header_value != 0)
-    unknown_entry UnkEntries[Test.num_unknown_entries] <comment = "Used for animated textures?", bgcolor = 0x00FFFF>;
-    FSeek(16 + Test.num_unknown_entries * 32); // for safety
-meshEntry MeshEntries[Test.NumMeshes] <optimize = false>;
+typedef struct cvblData
+{
+    header CVBLHeader <name = "Header", bgcolor = 0x00FFFF>;
+    if (CVBLHeader.unknown_header_value != 0)
+    {
+        unknown_entry UnkEntries[CVBLHeader.num_animtex] <comment = "Used for animated textures?", bgcolor = 0x00FFFF>;
+        FSeek(16 + CVBLHeader.num_animtex * 32); // for safety
+    }
+    meshEntry MeshEntries[CVBLHeader.NumMeshes] <name = "MeshEntry", optimize = false>;
+};
+
+cvblData FILE;
