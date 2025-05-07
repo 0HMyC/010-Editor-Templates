@@ -19,6 +19,8 @@ typedef enum<u16>
     NPC = 5,
 } MajorType;
 
+// TODO: Change "FieldXXX" name formatting to be based around relative offsets
+// instead of numeric index
 typedef struct(u32 Type1EntrySize)
 {
     u8 UnknownBytes[2] <bgcolor = 0x00FFFF>;
@@ -31,9 +33,17 @@ typedef struct(u32 Type1EntrySize)
     u8 Unknown <bgcolor = 0x00FFFF>;
     u16 Field000 <bgcolor = 0x00FFFF>;
     f32 CollisRadius <name = "Collision Radius">;
-    f32 UnknownFields[16] <bgcolor = 0x00FFFF>;
+    f32 UnknownFields[4] <bgcolor = 0x00FFFF>;
+    float BodyRotY <name = "Body Rotation Y">;
+    float BodyRotZ <name = "Body Rotation Z">;
+    float BodyRotX <name = "Body Rotation X">;
+    float Field009;
+    float BubbleY <name = "Speech Bubble Y Pos">; // affects y pos of sl/quest speech bubble
+    float BubbleZ <name = "Speech Bubble Z Pos">; // affects z pos of sl/quest speech bubble
+    float BubbleX <name = "Speech Bubble X Pos">; // affects x pos of sl/quest speech bubble
+    f32 UnknownFields2[5] <bgcolor = 0x00FFFF>;
     f32 YPos <name = "Y Pos">;
-    f32 Field019 <bgcolor = 0x00FFFF>;
+    f32 ZPos <name = "Z Pos">;
     f32 XPos <name = "X Pos">;
     f32 Field021 <bgcolor = 0x00FFFF>;
     u32 ShadowType <name = "Shadow Type">;
@@ -90,9 +100,9 @@ typedef struct FBNFile
     FBNHeader Header;
     TypeList EntryTypeList;
     if (EntryTypeList.Type1.Number > 0)
-        Type1Entries EntryType1Data(EntryTypeList.Type1.EntrySize)[ EntryTypeList.Type1.Number ];
+        Type1Entries EntryType1Data(EntryTypeList.Type1.EntrySize)[ EntryTypeList.Type1.Number ] <optimize=false>;
     if (EntryTypeList.Type2.Number > 0)
-        Type2Entries EntryType2Data[ EntryTypeList.Type2.Number ];
+        Type2Entries EntryType2Data[ EntryTypeList.Type2.Number ] <optimize=false>;
     if (FTell() < FileSize())
         u32 Unknown[(FileSize() - FTell()) / 4] <bgcolor=0x0000FF>;
 };
